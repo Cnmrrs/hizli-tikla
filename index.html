@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hızlı Tıkla! - Full + Full</title>
+    <title>Hızlı Tıkla! - Admin Pro</title>
     <style>
         /* --- GENEL AYARLAR --- */
         body {
@@ -12,24 +12,18 @@
             background-color: #2c3e50; overflow: hidden; user-select: none; touch-action: manipulation;
         }
 
-        /* ARKA PLAN KATMANI VE EFEKTLERİ */
+        /* ARKA PLAN */
         #bg-layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
             transition: background 0.5s;
         }
-        
-        /* 1. Renkli Akış (Default) */
         .bg-default {
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%; animation: gradientBG 15s ease infinite;
         }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* 2. Uzay Boşluğu */
-        .bg-space {
-            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
-            position: relative;
-        }
+        .bg-space { background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%); position: relative; }
         .bg-space::after {
             content: " . . . . . . . . . . . . . ";
             color: white; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -38,20 +32,18 @@
         }
         @keyframes moveStars { from { transform: translateY(0); } to { transform: translateY(-1000px); } }
 
-        /* 3. Matrix */
         .bg-matrix {
             background-color: black;
             background-image: linear-gradient(0deg, transparent 24%, rgba(0, 255, 0, .3) 25%, rgba(0, 255, 0, .3) 26%, transparent 27%, transparent 74%, rgba(0, 255, 0, .3) 75%, rgba(0, 255, 0, .3) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 255, 0, .3) 25%, rgba(0, 255, 0, .3) 26%, transparent 27%, transparent 74%, rgba(0, 255, 0, .3) 75%, rgba(0, 255, 0, .3) 76%, transparent 77%, transparent);
             background-size: 50px 50px;
         }
 
-        /* Ekranlar */
+        /* EKRANLAR */
         .game-screen {
             display: none; flex-direction: column; align-items: center; width: 100%; max-width: 600px;
             height: 100vh; position: relative; z-index: 10; justify-content: center;
         }
 
-        /* Menü Kartı */
         .menu-card {
             background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 30px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center; display: flex;
@@ -60,7 +52,6 @@
             overflow-y: auto; max-height: 90vh;
         }
 
-        /* Logo */
         .logo-container { width: 100px; height: 100px; position: relative; margin-bottom: 5px; animation: floatLogo 3s ease-in-out infinite; }
         .logo-circle { position: absolute; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); }
         .logo-outer { width: 100%; height: 100%; background: #e74c3c; box-shadow: 0 10px 20px rgba(231, 76, 60, 0.4); }
@@ -70,7 +61,7 @@
 
         h1 { color: #2c3e50; font-size: 2.2em; margin: 5px 0 15px 0; font-weight: 900; text-transform: uppercase; }
 
-        /* Butonlar */
+        /* BUTONLAR */
         button {
             width: 100%; padding: 12px; font-size: 1.1em; cursor: pointer; color: white;
             border: none; border-radius: 12px; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -88,10 +79,9 @@
         .bottom-actions button { font-size: 0.8em; padding: 10px; }
         #reset-data-button { background: #c0392b; border: 2px solid #e74c3c; }
         #admin-login-button { background: #2c3e50; border: 2px solid #34495e; }
-        
         .btn-red { background: #e74c3c; margin-top: 10px; }
 
-        /* Oyun Alanı */
+        /* OYUN ALANI */
         #top-info {
             width: 90%; display: flex; justify-content: space-between; background: white;
             padding: 10px 20px; border-radius: 15px; margin-bottom: 10px;
@@ -112,14 +102,9 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.15); cursor: crosshair; z-index: 5;
         }
 
-        /* Toplar */
-        .circle {
-            position: absolute; border-radius: 50%; transform: scale(0); opacity: 0;
-            transition: transform 0.1s; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
+        .circle { position: absolute; border-radius: 50%; transform: scale(0); opacity: 0; transition: transform 0.1s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .circle.active { transform: scale(1); opacity: 1; }
 
-        /* Skinler */
         .skin-default { background: radial-gradient(circle at 30% 30%, #ff7675, #d63031); }
         .skin-blue { background: radial-gradient(circle at 30% 30%, #74b9ff, #0984e3); }
         .skin-green { background: radial-gradient(circle at 30% 30%, #55efc4, #00b894); }
@@ -137,18 +122,16 @@
         @keyframes explode { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
         .circle.explode { animation: explode 0.2s forwards; }
 
-        /* Efektler */
         #feedback, #score-pop, #countdown { position: absolute; pointer-events: none; font-weight: bold; z-index: 100; text-shadow: 1px 1px 2px white; }
         #countdown { font-size: 6em; color: #e74c3c; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0; }
         .particle-emoji { position: absolute; font-size: 24px; pointer-events: none; z-index: 20; animation: floatUp 1s forwards; }
         @keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity:1; } 100% { transform: translateY(-50px) scale(1.5); opacity:0; } }
 
-        /* Kontroller */
         #controls-area { width: 90%; max-width: 550px; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 20; }
         .input-row { display: flex; gap: 10px; }
         input, select { flex: 1; padding: 15px; border-radius: 12px; border: 1px solid #ccc; font-size: 1em; text-align: center; }
 
-        /* Mağaza */
+        /* MAĞAZA */
         #shop-screen { display: none; flex-direction: column; justify-content: center; }
         .shop-card { background: white; border-radius: 20px; width: 90%; max-width: 500px; height: 80vh; display: flex; flex-direction: column; padding: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); box-sizing: border-box; }
         .shop-header { text-align: center; margin-bottom: 10px; border-bottom: 2px solid #eee; padding-bottom: 10px; flex-shrink: 0; }
@@ -162,20 +145,17 @@
         .shop-desc { font-size: 0.75em; color: #777; margin-bottom: 5px; min-height: 30px; }
         .item-owned { border-color: #2ecc71; background: #eaffea; }
 
-        /* Listeler */
+        /* LİSTELER */
         .scroll-content { flex: 1; overflow-y: auto; width: 100%; text-align: left; margin: 10px 0; }
         .list-item { background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #bdc3c7; }
         .list-item.done { border-left-color: #2ecc71; }
         
-        /* Ses Butonu */
         #sound-toggle { position: absolute; top: 20px; right: 20px; width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5em; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 100; user-select: none; }
         
-        /* Tab Butonları */
         .tab-container { display: flex; gap: 10px; width: 100%; margin-bottom: 10px; }
         .tab-btn { flex: 1; background: #eee; color: #555; padding: 10px; border: none; border-radius: 8px; font-weight: bold; }
         .tab-btn.active { background: #3498db; color: white; }
 
-        /* Tutorial */
         #tutorial-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 200; }
         #tutorial-content { background: white; padding: 30px; border-radius: 15px; max-width: 400px; text-align: center; }
 
@@ -232,12 +212,14 @@
                 </select>
             </div>
             <button id="start-game-button" style="background: #2ecc71;">BAŞLAT</button>
-            
             <button id="initial-back-button" class="btn-red" onclick="showScreen('main-menu')">ANA MENÜYE DÖN</button>
 
             <div class="input-row" id="end-game-buttons" style="display: none;">
                 <button id="reset-button" style="background: #f39c12;">TEKRAR</button>
                 <button id="back-to-menu-button" style="background: #e74c3c;">ÇIKIŞ</button>
+            </div>
+            <div style="display:flex; gap:10px; justify-content:center; color:white; font-size:0.9em;">
+                <span id="shield-status">🛡️ Kalkan: 0</span> | <span id="headstart-status">🚀 Boost: 0</span>
             </div>
         </div>
     </div>
@@ -393,68 +375,63 @@
         }
 
         function setupEvents(){
-            // ANA MENÜ OYUNA BAŞLA: EKRANI SIFIRLAYARAK AÇ
-            document.getElementById('play-button').onclick=()=>{
-                resetGameUI();
-                showScreen('game-area');
-            };
-
+            document.getElementById('play-button').onclick=()=>showScreen('game-area');
             document.getElementById('menu-shop-button').onclick=()=>{showScreen('shop-screen');renderShop()};
             document.getElementById('menu-quests-achievements-button').onclick=()=>{showScreen('qa-screen');renderQuests()};
             document.getElementById('menu-scores-button').onclick=()=>{showScreen('scores-screen');renderScores('all')};
             document.getElementById('menu-tutorial-button').onclick=()=>document.getElementById('tutorial-overlay').style.display='flex';
             document.getElementById('close-tutorial').onclick=()=>document.getElementById('tutorial-overlay').style.display='none';
             
-            // SIFIRLA VE ADMIN
+            // SIFIRLA VE ADMIN (YENİ HİLE EKLENDİ)
             document.getElementById('reset-data-button').onclick=()=>{ 
                 if(confirm("Tüm ilerlemen silinecek! Emin misin?")) { localStorage.clear(); location.reload(); } 
             };
             document.getElementById('admin-login-button').onclick=()=>{ 
-                const pass = prompt("Admin Şifresi:");
-                if(pass === 'NPM5') {
-                    state.coins = 9999999;
-                    saveData(); updateUI(); alert("SINIRSIZ PARA TANIMLANDI!");
-                } else { alert("Hatalı Şifre!"); }
+                const input = prompt("Admin Komutu:");
+                if(input.startsWith('!')) {
+                    const amount = parseInt(input.substring(1));
+                    if(!isNaN(amount)) {
+                        state.coins += amount;
+                        saveData(); updateUI();
+                        alert(`${amount} Para Eklendi!`);
+                    } else {
+                        alert("Geçersiz kod!");
+                    }
+                } else if(input === 'NPM5') {
+                     // Eski kod desteği
+                     state.coins = 9999999;
+                     saveData(); updateUI(); alert("Sınırsız Para!");
+                } else {
+                    alert("Hatalı!");
+                }
             };
 
             document.getElementById('shop-back-button').onclick=()=>showScreen('main-menu');
             document.getElementById('quest-back-button').onclick=()=>showScreen('main-menu');
             document.getElementById('score-back-button').onclick=()=>showScreen('main-menu');
-            
-            // ÇIKIŞ (Oyun bittiğinde)
+            document.getElementById('initial-back-button').onclick=()=>showScreen('main-menu');
             document.getElementById('back-to-menu-button').onclick=()=>{stopGame();showScreen('main-menu')};
             
             document.getElementById('start-game-button').onclick=startGame;
             document.getElementById('reset-button').onclick=startGame;
             document.getElementById('sound-toggle').onclick=(e)=>{AudioSys.enabled=!AudioSys.enabled;e.target.textContent=AudioSys.enabled?'🔊':'🔇';if(AudioSys.enabled)AudioSys.init()};
+            
+            document.getElementById('menu-shop-button').addEventListener('click', renderShop);
         }
 
         function showScreen(id){els.screens.forEach(s=>s.style.display='none');document.getElementById(id).style.display='flex';}
+        
         function updateUI(){
             els.coin.textContent=state.coins; els.shopCoins.textContent=state.coins;
-        }
-
-        // OYUN ARAYÜZÜNÜ SIFIRLAMA (Geri dönünce düzelmesi için)
-        function resetGameUI() {
-            // Butonları başlangıç haline getir
-            document.getElementById('start-game-button').style.display = 'block';
-            document.getElementById('initial-back-button').style.display = 'block'; // Geri dön butonu görünür
-            document.getElementById('end-game-buttons').style.display = 'none';
-            
-            // Inputları aç
-            document.getElementById('difficulty').disabled = false;
-            document.getElementById('player-name').disabled = false;
-            
-            // Skorları ve daireleri temizle
-            els.score.textContent = '0';
-            els.time.textContent = '30';
-            activeCircles.forEach(c=>c.remove()); activeCircles=[];
-            document.getElementById('power-status').textContent = '';
+            const shield = SHOP_ITEMS.consumable.find(x=>x.id==='con_shield');
+            const head = SHOP_ITEMS.consumable.find(x=>x.id==='con_head');
+            if(shield) document.getElementById('shield-status').textContent = `🛡️ Kalkan: ${shield.count}`;
+            if(head) document.getElementById('headstart-status').textContent = `🚀 Boost: ${head.count}`;
         }
 
         function startGame(){
             if(state.active)return;
-            state.active=true; state.score=0; state.activePower = null; document.getElementById('power-status').textContent = '';
+            state.active=true; state.score=0; state.activePower = null; els.powerStatus.textContent = '';
             const diff=document.getElementById('difficulty').value;
             
             let boost = 0;
@@ -465,10 +442,8 @@
             
             activeCircles.forEach(c=>c.remove()); activeCircles=[];
             els.score.textContent='0'; els.time.textContent=state.time;
-            
-            // BAŞLAYINCA GİZLE
             document.getElementById('start-game-button').style.display='none';
-            document.getElementById('initial-back-button').style.display='none'; // Geri dön gizle
+            document.getElementById('initial-back-button').style.display='none';
             document.getElementById('end-game-buttons').style.display='none';
             document.getElementById('difficulty').disabled=true;
             document.getElementById('player-name').disabled=true;
@@ -607,7 +582,7 @@
 
         function stopGame(){
             state.active=false; clearTimeout(spawnTimeout); clearInterval(timerInterval);
-            activeCircles.forEach(c=>c.remove()); activeCircles=[]; state.activePower = null; document.getElementById('power-status').textContent = '';
+            activeCircles.forEach(c=>c.remove()); activeCircles=[]; state.activePower = null; els.powerStatus.textContent = '';
         }
 
         function showText(el,txt,col){
