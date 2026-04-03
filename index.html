@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hızlı Tıkla!</title>
     <style>
         /* --- GENEL AYARLAR --- */
@@ -73,12 +73,11 @@
         #menu-shop-button { background: linear-gradient(45deg, #f1c40f, #f39c12); }
         #menu-quests-achievements-button { background: linear-gradient(45deg, #9b59b6, #8e44ad); }
         #menu-scores-button { background: linear-gradient(45deg, #3498db, #2980b9); }
+        #menu-cloud-button { background: linear-gradient(45deg, #1abc9c, #16a085); }
         #menu-tutorial-button { background: #7f8c8d; font-size: 0.9em; }
         
         .bottom-actions { display: flex; gap: 10px; width: 100%; margin-top: 10px; }
         .bottom-actions button { font-size: 0.8em; padding: 10px; }
-        #reset-data-button { background: #c0392b; border: 2px solid #e74c3c; }
-        #admin-login-button { background: #2c3e50; border: 2px solid #34495e; }
         .btn-red { background: #e74c3c; margin-top: 10px; }
 
         /* OYUN ALANI */
@@ -90,17 +89,9 @@
         .stat-box { text-align: center; font-weight: bold; color: #34495e; }
         .stat-val { display: block; font-size: 1.4em; color: #e74c3c; }
 
-        #power-status {
-            height: 30px; width: 90%; margin-bottom: 5px; text-align: center;
-            font-weight: bold; font-size: 1.2em; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            display: flex; justify-content: center; align-items: center; color: white;
-        }
+        #power-status { height: 30px; width: 90%; margin-bottom: 5px; text-align: center; font-weight: bold; font-size: 1.2em; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; color: white; }
 
-        #game-container {
-            position: relative; width: 95vw; max-width: 550px; height: 60vh; max-height: 650px;
-            background: rgba(255,255,255,0.95); border: 4px solid #34495e; border-radius: 20px; overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); cursor: crosshair; z-index: 5;
-        }
+        #game-container { position: relative; width: 95vw; max-width: 550px; height: 60vh; max-height: 650px; background: rgba(255,255,255,0.95); border: 4px solid #34495e; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15); cursor: crosshair; z-index: 5; }
 
         .circle { position: absolute; border-radius: 50%; transform: scale(0); opacity: 0; transition: transform 0.1s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .circle.active { transform: scale(1); opacity: 1; }
@@ -108,11 +99,10 @@
         .skin-default { background: radial-gradient(circle at 30% 30%, #ff7675, #d63031); }
         .skin-blue { background: radial-gradient(circle at 30% 30%, #74b9ff, #0984e3); }
         .skin-green { background: radial-gradient(circle at 30% 30%, #55efc4, #00b894); }
-        .skin-purple { background: radial-gradient(circle at 30% 30%, #a29bfe, #6c5ce7); }
-        .skin-gold { background: radial-gradient(circle at 30% 30%, #ffeaa7, #fdcb6e); border: 3px solid #e17055; }
         .skin-pink { background: radial-gradient(circle at 30% 30%, #fd79a8, #e84393); }
         .skin-cyan { background: radial-gradient(circle at 30% 30%, #81ecec, #00cec9); }
         .skin-dark { background: radial-gradient(circle at 30% 30%, #636e72, #2d3436); border: 2px solid #fff; }
+        .skin-gold { background: radial-gradient(circle at 30% 30%, #ffeaa7, #fdcb6e); border: 3px solid #e17055; }
         .skin-rainbow { background: linear-gradient(135deg, red, orange, yellow, green, blue, indigo, violet); border: 2px solid white; }
 
         .bad { background: radial-gradient(circle at 30% 30%, #636e72, #2d3436); border: 3px solid #000; z-index: 5; }
@@ -130,6 +120,18 @@
         #controls-area { width: 90%; max-width: 550px; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 20; }
         .input-row { display: flex; gap: 10px; }
         input, select { flex: 1; padding: 15px; border-radius: 12px; border: 1px solid #ccc; font-size: 1em; text-align: center; }
+
+        /* CLOUD UI & TOGGLES */
+        .cloud-info { background: #f8f9fa; padding: 15px; border-radius: 10px; width: 100%; box-sizing: border-box; text-align: left; border: 2px solid #bdc3c7; margin-bottom: 10px; }
+        .cloud-status { color: #e67e22; font-weight: bold; }
+        
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; background: #ecf0f1; padding: 12px 15px; border-radius: 10px; width: 100%; box-sizing: border-box; margin-bottom: 10px;}
+        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #2ecc71; }
+        input:checked + .slider:before { transform: translateX(22px); }
 
         /* MAĞAZA */
         #shop-screen { display: none; flex-direction: column; justify-content: center; }
@@ -156,9 +158,29 @@
         .tab-btn { flex: 1; background: #eee; color: #555; padding: 10px; border: none; border-radius: 8px; font-weight: bold; }
         .tab-btn.active { background: #3498db; color: white; }
 
-        #tutorial-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 200; }
+        #tutorial-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 200; backdrop-filter: blur(5px); }
         #tutorial-content { background: white; padding: 30px; border-radius: 15px; max-width: 400px; text-align: center; }
 
+        /* TOAST & MODALS */
+        #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 1000; pointer-events: none; }
+        .toast { background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 30px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.3); animation: slideUp 0.3s ease-out forwards; }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        #custom-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(5px); }
+        .modal-box { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .modal-box p { font-size: 1.1em; color: #2c3e50; font-weight: bold; margin-bottom: 20px; }
+        .modal-buttons { display: flex; gap: 10px; }
+
+        /* AUTH UI EKLEMELERİ */
+        #mini-npm-id { font-size: 0.75em; color: #7f8c8d; margin-top: 15px; letter-spacing: 0.5px; font-weight: bold; text-transform: uppercase; }
+        .auth-input { width: 100%; box-sizing: border-box; padding: 12px; border-radius: 10px; border: 2px solid #bdc3c7; font-size: 0.95em; outline: none; transition: border-color 0.3s; margin-bottom: 5px; }
+        .auth-input:focus { border-color: #3498db; }
+        .cloud-section { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+        
+        /* KVKK EKLENTİSİ */
+        .kvkk-container { display: flex; align-items: flex-start; gap: 8px; font-size: 0.75em; color: #7f8c8d; margin-bottom: 5px; text-align: left; }
+        .kvkk-container input[type="checkbox"] { width: 16px; height: 16px; margin-top: 2px; cursor: pointer; accent-color: #3498db; flex-shrink: 0; }
+        .kvkk-link { color: #3498db; text-decoration: underline; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -166,6 +188,7 @@
     <div id="bg-layer" class="bg-default"></div>
     <div id="sound-toggle">🔊</div>
 
+    <!-- MAIN MENU -->
     <div id="main-menu" class="game-screen" style="display: flex;">
         <div class="menu-card">
             <div class="logo-container">
@@ -174,6 +197,7 @@
                 <div class="logo-circle logo-inner"></div>
             </div>
             <h1>Hızlı Tıkla!</h1>
+            <div style="font-size:0.8em; color:#7f8c8d; margin-top:-10px; margin-bottom:15px;"></div>
             <button id="play-button">► OYUNA BAŞLA</button>
             <button id="menu-shop-button">🛍️ MAĞAZA</button>
             <button id="menu-quests-achievements-button">🏆 GÖREVLER</button>
@@ -181,12 +205,72 @@
             <button id="menu-tutorial-button">❓ NASIL OYNANIR</button>
             
             <div class="bottom-actions">
-                <button id="reset-data-button">⚠️ SIFIRLA</button>
-                <button id="admin-login-button">🔑 ADMİN</button>
+                <button id="reset-data-button" style="background:#c0392b; border: 2px solid #e74c3c;">⚠️ SIFIRLA</button>
+                <button id="menu-cloud-button">☁️ NPM ID</button>
+                <button id="admin-login-button" style="background:#2c3e50;">🔑 ADMİN</button>
             </div>
+            <div id="mini-npm-id">NPM ID: BAĞLANIYOR...</div>
         </div>
     </div>
 
+    <!-- CLOUD SCREEN -->
+    <div id="cloud-screen" class="game-screen">
+        <div class="menu-card" style="max-width: 320px; padding: 20px;">
+            <h2 style="font-size: 1.5em; margin-top: 0; margin-bottom: 15px;">☁️ NPM ID</h2>
+            
+            <!-- GİRİŞ / KAYIT BÖLÜMÜ -->
+            <div id="auth-section" class="cloud-section">
+                <input type="email" id="auth-email" class="auth-input" placeholder="E-Posta Adresi">
+                <input type="password" id="auth-pass" class="auth-input" placeholder="Şifre">
+                
+                <div class="kvkk-container">
+                    <input type="checkbox" id="kvkk-check">
+                    <label for="kvkk-check">
+                        Kayıt olmak için <span class="kvkk-link" id="open-kvkk">NPM ID Aydınlatma Metni</span>'ni okudum ve kabul ediyorum.
+                    </label>
+                </div>
+
+                <div style="display: flex; gap: 5px;">
+                    <button id="btn-login" style="background: #3498db; padding: 10px; font-size: 0.9em;">GİRİŞ YAP</button>
+                    <button id="btn-register" style="background: #9b59b6; padding: 10px; font-size: 0.9em;">KAYIT OL</button>
+                </div>
+            </div>
+
+            <!-- E-POSTA ONAY BÖLÜMÜ -->
+            <div id="verify-section" class="cloud-section" style="display: none;">
+                <p style="font-size: 0.95em; color: #e74c3c; font-weight: bold; margin: 0;">Lütfen e-postanızı onaylayın!</p>
+                <p id="verify-email-text" style="font-size: 0.85em; color: #7f8c8d; margin: 0 0 10px 0; word-break: break-all;"></p>
+                <button id="btn-check-verify" style="background: #2ecc71; padding: 10px; font-size: 0.9em;">✅ ONAYLADIM (YENİLE)</button>
+                <div style="display: flex; gap: 5px;">
+                    <button id="btn-resend-verify" style="background: #f39c12; padding: 10px; font-size: 0.8em;">TEKRAR GÖNDER</button>
+                    <button class="btn-logout-action btn-red" style="padding: 10px; font-size: 0.8em; margin-top: 0;">ÇIKIŞ</button>
+                </div>
+            </div>
+
+            <!-- BULUT SENKRONİZASYON BÖLÜMÜ -->
+            <div id="sync-section" class="cloud-section" style="display: none;">
+                <div class="cloud-info" style="padding: 10px; margin-bottom: 5px;">
+                    <div style="font-size: 0.8em; color: #7f8c8d; text-align: center;" id="cloud-uid-text">--</div>
+                </div>
+                <div class="toggle-row" style="padding: 8px 10px; margin-bottom: 5px;">
+                    <span style="font-weight:bold; font-size:0.9em; color:#34495e;">🔄 Oto-Kayıt</span>
+                    <label class="switch">
+                        <input type="checkbox" id="auto-save-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div style="display: flex; gap: 5px;">
+                    <button id="cloud-save-btn" style="background: #2980b9; padding: 10px; font-size: 0.8em;">☁️ KAYDET</button>
+                    <button id="cloud-load-btn" style="background: #27ae60; padding: 10px; font-size: 0.8em;">📥 YÜKLE</button>
+                </div>
+                <button class="btn-logout-action btn-red" style="padding: 10px; font-size: 0.8em; margin-top: 5px;">🚪 ÇIKIŞ YAP</button>
+            </div>
+
+            <button class="btn-red" id="cloud-back-button" style="margin-top: 15px; background: #7f8c8d; padding: 10px;">GERİ DÖN</button>
+        </div>
+    </div>
+
+    <!-- GAME AREA -->
     <div id="game-area" class="game-screen">
         <div id="top-info">
             <div class="stat-box">PUAN <span class="stat-val" id="score">0</span></div>
@@ -212,7 +296,7 @@
                 </select>
             </div>
             <button id="start-game-button" style="background: #2ecc71;">BAŞLAT</button>
-            <button id="initial-back-button" class="btn-red" onclick="showScreen('main-menu')">ANA MENÜYE DÖN</button>
+            <button id="initial-back-button" class="btn-red">ANA MENÜYE DÖN</button>
 
             <div class="input-row" id="end-game-buttons" style="display: none;">
                 <button id="reset-button" style="background: #f39c12;">TEKRAR</button>
@@ -224,6 +308,7 @@
         </div>
     </div>
 
+    <!-- SHOP -->
     <div id="shop-screen" class="game-screen">
         <div class="shop-card">
             <div class="shop-header">
@@ -231,9 +316,9 @@
                 <div style="color:#f39c12; font-weight:bold;">Bakiye: <span id="shop-coin-display">0</span></div>
             </div>
             <div class="shop-tabs">
-                <button class="shop-tab active" onclick="filterShop('cosmetic')">Görünüm</button>
-                <button class="shop-tab" onclick="filterShop('upgrade')">Yetenek</button>
-                <button class="shop-tab" onclick="filterShop('consumable')">Market</button>
+                <button class="shop-tab active" data-tab="cosmetic">Görünüm</button>
+                <button class="shop-tab" data-tab="upgrade">Yetenek</button>
+                <button class="shop-tab" data-tab="consumable">Market</button>
             </div>
             <div id="shop-list"></div>
             <div class="shop-footer">
@@ -242,24 +327,26 @@
         </div>
     </div>
 
+    <!-- QUESTS -->
     <div id="qa-screen" class="game-screen">
         <div class="menu-card" style="height: 80%;">
             <h2>GÖREVLER</h2>
             <div class="tab-container">
-                <button class="tab-btn active" onclick="switchTab('daily')">GÜNLÜK</button>
-                <button class="tab-btn" onclick="switchTab('weekly')">HAFTALIK</button>
+                <button class="tab-btn q-tab active" data-qtab="daily">GÜNLÜK</button>
+                <button class="tab-btn q-tab" data-qtab="weekly">HAFTALIK</button>
             </div>
             <div class="scroll-content" id="quest-list"></div>
             <button class="btn-red" id="quest-back-button">GERİ DÖN</button>
         </div>
     </div>
 
+    <!-- SCORES -->
     <div id="scores-screen" class="game-screen">
         <div class="menu-card" style="height: 80%;">
             <h2>EN İYİLER</h2>
             <div class="input-row" style="width:100%; margin-bottom:10px;">
-                <button onclick="renderScores('all')" style="padding:10px; font-size:1em;">Tüm Zamanlar</button>
-                <button onclick="renderScores('weekly')" style="padding:10px; font-size:1em;">Haftalık</button>
+                <button class="score-tab" data-stab="all" style="padding:10px; font-size:1em;">Tüm Zamanlar</button>
+                <button class="score-tab" data-stab="weekly" style="padding:10px; font-size:1em;">Haftalık</button>
             </div>
             <div class="scroll-content" id="score-list"></div>
             <button class="btn-red" id="score-back-button">GERİ DÖN</button>
@@ -277,46 +364,330 @@
         </div>
     </div>
 
-    <script>
-        const AudioSys={ctx:null,enabled:true,init:function(){if(!this.ctx)this.ctx=new(window.AudioContext||window.webkitAudioContext)()},play:function(t){if(!this.enabled||!this.ctx)return;if(this.ctx.state==='suspended')this.ctx.resume();const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.connect(g);g.connect(this.ctx.destination);const n=this.ctx.currentTime;if(t==='pop'){o.type='sine';o.frequency.setValueAtTime(600,n);o.frequency.exponentialRampToValueAtTime(300,n+0.1);g.gain.setValueAtTime(0.3,n);g.gain.exponentialRampToValueAtTime(0.01,n+0.1);o.start(n);o.stop(n+0.1)}else if(t==='bad'){o.type='sawtooth';o.frequency.setValueAtTime(150,n);o.frequency.linearRampToValueAtTime(50,n+0.3);g.gain.setValueAtTime(0.2,n);g.gain.linearRampToValueAtTime(0.01,n+0.3);o.start(n);o.stop(n+0.3)}else if(t==='coin'){o.type='square';o.frequency.setValueAtTime(800,n);o.frequency.exponentialRampToValueAtTime(1200,n+0.1);g.gain.setValueAtTime(0.1,n);g.gain.linearRampToValueAtTime(0.01,n+0.1);o.start(n);o.stop(n+0.1)}}};
+    <!-- TOASTS & MODALS -->
+    <div id="toast-container"></div>
+    <div id="custom-modal">
+        <div class="modal-box">
+            <p id="modal-text">Emin misin?</p>
+            <div class="modal-buttons">
+                <button id="modal-yes" style="background: #2ecc71;">EVET</button>
+                <button id="modal-no" style="background: #e74c3c;">İPTAL</button>
+            </div>
+            <div id="modal-input-area" style="display:none; margin-bottom:15px;">
+                <input type="text" id="modal-input" style="width:100%; box-sizing:border-box;">
+            </div>
+        </div>
+    </div>
 
-        const SHOP_ITEMS = {
+    <!-- KVKK MODAL -->
+    <div id="kvkk-modal" class="game-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
+        <div class="modal-box" style="max-width: 400px; text-align: left;">
+            <h3 style="color: #2c3e50; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px;">Aydınlatma Metni</h3>
+            <p style="font-size: 0.95em; color: #34495e; line-height: 1.5; font-weight: normal;">
+                Verileriniz hiçbir yerde kullanılmamaktadır, başka biriyle veya kurumla paylaşılmamaktadır. Oyun içi kayıt verileriniz güvenli bir şekilde yalnızca <b>Google Firebase</b> sunucularında tutulmaktadır.
+            </p>
+            <button id="close-kvkk" style="background: #3498db; margin-top: 15px;">ANLADIM</button>
+        </div>
+    </div>
+
+    <!-- FIREBASE & GAME LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // CANVAS FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyBmrxIAgrotgTLZHrwnA34w90Qt0mpc4jw",
+            authDomain: "npm-id---game.firebaseapp.com",
+            projectId: "npm-id---game",
+            storageBucket: "npm-id---game.firebasestorage.app",
+            messagingSenderId: "205750770441",
+            appId: "1:205750770441:web:70e0276f17b9205c7391d8"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = 'NPM_HIZLI_TIKLA';
+
+        // GLOABAL STATE
+        let currentUser = null;
+        let cloudDebounceTimeout;
+
+        const AudioSys = {
+            ctx:null, enabled:true,
+            init:function(){if(!this.ctx)this.ctx=new(window.AudioContext||window.webkitAudioContext)()},
+            play:function(t){
+                if(!this.enabled||!this.ctx)return;
+                if(this.ctx.state==='suspended')this.ctx.resume();
+                const o=this.ctx.createOscillator(),g=this.ctx.createGain();
+                o.connect(g);g.connect(this.ctx.destination);
+                const n=this.ctx.currentTime;
+                if(t==='pop'){o.type='sine';o.frequency.setValueAtTime(600,n);o.frequency.exponentialRampToValueAtTime(300,n+0.1);g.gain.setValueAtTime(0.3,n);g.gain.exponentialRampToValueAtTime(0.01,n+0.1);o.start(n);o.stop(n+0.1)}
+                else if(t==='bad'){o.type='sawtooth';o.frequency.setValueAtTime(150,n);o.frequency.linearRampToValueAtTime(50,n+0.3);g.gain.setValueAtTime(0.2,n);g.gain.linearRampToValueAtTime(0.01,n+0.3);o.start(n);o.stop(n+0.3)}
+                else if(t==='coin'){o.type='square';o.frequency.setValueAtTime(800,n);o.frequency.exponentialRampToValueAtTime(1200,n+0.1);g.gain.setValueAtTime(0.1,n);g.gain.linearRampToValueAtTime(0.01,n+0.1);o.start(n);o.stop(n+0.1)}
+            }
+        };
+
+        const SHOP_ITEMS_TEMPLATE = {
             cosmetic: [
                 {id:'skin_def', type:'skin', name:'Klasik Top', price:0, owned:true, css:'skin-default', emoji:''},
-                {id:'skin_blue', type:'skin', name:'Okyanus Top', price:500, owned:false, css:'skin-blue', emoji:''},
-                {id:'skin_green', type:'skin', name:'Zehirli Top', price:750, owned:false, css:'skin-green', emoji:''},
-                {id:'skin_pink', type:'skin', name:'Şeker Pembe', price:1000, owned:false, css:'skin-pink', emoji:''},
-                {id:'skin_cyan', type:'skin', name:'Neon Turkuaz', price:1500, owned:false, css:'skin-cyan', emoji:''},
-                {id:'skin_dark', type:'skin', name:'Gece Yarısı', price:2000, owned:false, css:'skin-dark', emoji:''},
-                {id:'skin_gold', type:'skin', name:'Altın Top', price:3000, owned:false, css:'skin-gold', emoji:''},
+                {id:'skin_blue', type:'skin', name:'Okyanus', price:500, owned:false, css:'skin-blue', emoji:''},
+                {id:'skin_green', type:'skin', name:'Zehir', price:750, owned:false, css:'skin-green', emoji:''},
+                {id:'skin_pink', type:'skin', name:'Şeker', price:1000, owned:false, css:'skin-pink', emoji:''},
+                {id:'skin_cyan', type:'skin', name:'Turkuaz', price:1500, owned:false, css:'skin-cyan', emoji:''},
+                {id:'skin_dark', type:'skin', name:'Gece', price:2000, owned:false, css:'skin-dark', emoji:''},
+                {id:'skin_gold', type:'skin', name:'Altın', price:3000, owned:false, css:'skin-gold', emoji:''},
                 {id:'skin_rb', type:'skin', name:'Gökkuşağı', price:5000, owned:false, css:'skin-rainbow', emoji:''},
-                {id:'bg_def', type:'bg', name:'Renkli Akış', price:0, owned:true, css:'bg-default', emoji:'🌈'},
-                {id:'bg_space', type:'bg', name:'Uzay Boşluğu', price:750, owned:false, css:'bg-space', emoji:'🌌'},
+                {id:'bg_def', type:'bg', name:'Renkli', price:0, owned:true, css:'bg-default', emoji:'🌈'},
+                {id:'bg_space', type:'bg', name:'Uzay', price:750, owned:false, css:'bg-space', emoji:'🌌'},
                 {id:'bg_matrix', type:'bg', name:'Matrix', price:800, owned:false, css:'bg-matrix', emoji:'💻'},
-                {id:'part_def', type:'part', name:'Normal Efekt', price:0, owned:true, val:'def', emoji:'⚪'},
-                {id:'part_fire', type:'part', name:'Alev Efekti', price:600, owned:false, val:'🔥', emoji:'🔥'},
-                {id:'part_money', type:'part', name:'Para Yağmuru', price:1000, owned:false, val:'💵', emoji:'💵'}
+                {id:'part_def', type:'part', name:'Normal', price:0, owned:true, val:'def', emoji:'⚪'},
+                {id:'part_fire', type:'part', name:'Alev', price:600, owned:false, val:'🔥', emoji:'🔥'},
+                {id:'part_money', type:'part', name:'Para', price:1000, owned:false, val:'💵', emoji:'💵'}
             ],
             upgrade: [
-                {id:'upg_time', type:'upgrade', name:'Zaman Ustası', desc:'Güçler 8sn sürer', price:5000, owned:false, emoji:'⏳'},
-                {id:'upg_coin', type:'upgrade', name:'Para Mıknatısı', desc:'2X Para Kazan', price:8000, owned:false, emoji:'🧲'},
-                {id:'upg_boss', type:'upgrade', name:'Boss Celladı', desc:'Boss 2 vuruşta ölür', price:6000, owned:false, emoji:'⚔️'}
+                {id:'upg_time', type:'upgrade', name:'Zaman Ustası', desc:'Güçler 8sn', price:5000, owned:false, emoji:'⏳'},
+                {id:'upg_coin', type:'upgrade', name:'Mıknatıs', desc:'2X Para', price:8000, owned:false, emoji:'🧲'},
+                {id:'upg_boss', type:'upgrade', name:'Cellat', desc:'Boss 2 Vuruş', price:6000, owned:false, emoji:'⚔️'}
             ],
             consumable: [
-                {id:'con_shield', type:'consumable', name:'Kalkan', desc:'1 Hatadan Korur', price:250, count:0, emoji:'🛡️'},
-                {id:'con_head', type:'consumable', name:'Hızlı Başlangıç', desc:'+5sn ile Başla', price:300, count:0, emoji:'🚀'}
+                {id:'con_shield', type:'consumable', name:'Kalkan', desc:'1 Hata Koru', price:250, count:0, emoji:'🛡️'},
+                {id:'con_head', type:'consumable', name:'Hızlı Başla', desc:'+5sn Başla', price:300, count:0, emoji:'🚀'}
             ]
         };
         
-        let state = { score:0, coins:0, time:30, active:false, activePower: null, equipped: { skin:'skin_def', bg:'bg_def', part:'part_def' } };
+        let SHOP_ITEMS = JSON.parse(JSON.stringify(SHOP_ITEMS_TEMPLATE));
+        let state = { coins:0, score:0, time:30, active:false, activePower: null, equipped: { skin:'skin_def', bg:'bg_def', part:'part_def' }, autoSave: true };
         let activeCircles=[], spawnTimeout, timerInterval, powerTimeout;
         let quests = { daily: [], weekly: [] };
         let currentShopFilter = 'cosmetic';
         let currentQuestView = 'daily';
 
-        const els={screens:document.querySelectorAll('.game-screen'),score:document.getElementById('score'),time:document.getElementById('timer'),coin:document.getElementById('coins'),gameCont:document.getElementById('game-container'),shopCoins:document.getElementById('shop-coin-display'),powerStatus:document.getElementById('power-status')};
+        const els = {
+            screens: document.querySelectorAll('.game-screen'),
+            score: document.getElementById('score'), time: document.getElementById('timer'),
+            coin: document.getElementById('coins'), gameCont: document.getElementById('game-container'),
+            shopCoins: document.getElementById('shop-coin-display'), powerStatus: document.getElementById('power-status')
+        };
 
+        // --- UTILS ---
+        function showScreen(id) { els.screens.forEach(s=>s.style.display='none'); document.getElementById(id).style.display='flex'; }
+        
+        function showToast(msg, duration = 2500) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast'; toast.textContent = msg;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(()=>toast.remove(), 300); }, duration);
+        }
+
+        function askConfirm(msg, callback) {
+            const modal = document.getElementById('custom-modal');
+            document.getElementById('modal-text').textContent = msg;
+            document.getElementById('modal-input-area').style.display = 'none';
+            modal.style.display = 'flex';
+            
+            document.getElementById('modal-yes').onclick = () => { modal.style.display = 'none'; callback(true); };
+            document.getElementById('modal-no').onclick = () => { modal.style.display = 'none'; callback(false); };
+        }
+
+        function askPrompt(msg, callback) {
+            const modal = document.getElementById('custom-modal');
+            document.getElementById('modal-text').textContent = msg;
+            const input = document.getElementById('modal-input');
+            input.value = '';
+            document.getElementById('modal-input-area').style.display = 'block';
+            modal.style.display = 'flex';
+            
+            document.getElementById('modal-yes').onclick = () => { modal.style.display = 'none'; callback(input.value); };
+            document.getElementById('modal-no').onclick = () => { modal.style.display = 'none'; callback(null); };
+        }
+
+        function getAuthErrorMsg(code) {
+            switch(code) {
+                case 'auth/email-already-in-use': return 'Bu e-posta zaten kullanımda.';
+                case 'auth/invalid-email': return 'Geçersiz e-posta adresi.';
+                case 'auth/weak-password': return 'Şifre çok zayıf (En az 6 karakter).';
+                case 'auth/user-not-found': return 'Kullanıcı bulunamadı.';
+                case 'auth/wrong-password': return 'Hatalı şifre.';
+                case 'auth/invalid-credential': return 'Giriş bilgileri hatalı.';
+                case 'auth/missing-password': return 'Lütfen şifre girin.';
+                default: return 'Bir hata oluştu.';
+            }
+        }
+
+        function updateCloudUI() {
+            const authSec = document.getElementById('auth-section');
+            const verifySec = document.getElementById('verify-section');
+            const syncSec = document.getElementById('sync-section');
+            const miniText = document.getElementById('mini-npm-id');
+
+            if (currentUser && !currentUser.isAnonymous) {
+                if (currentUser.emailVerified) {
+                    authSec.style.display = 'none'; verifySec.style.display = 'none'; syncSec.style.display = 'flex';
+                    document.getElementById('cloud-uid-text').textContent = currentUser.email;
+                    miniText.textContent = `NPM ID: ${currentUser.email}`;
+                } else {
+                    authSec.style.display = 'none'; verifySec.style.display = 'flex'; syncSec.style.display = 'none';
+                    document.getElementById('verify-email-text').textContent = currentUser.email;
+                    miniText.textContent = `NPM ID: ONAY BEKLİYOR`;
+                }
+            } else {
+                authSec.style.display = 'flex'; verifySec.style.display = 'none'; syncSec.style.display = 'none';
+                miniText.textContent = `NPM ID: MİSAFİR`;
+            }
+        }
+
+        // --- FIREBASE INIT ---
+        async function initCloudAuth() {
+            try {
+                if (!auth.currentUser) {
+                    await signInAnonymously(auth);
+                }
+            } catch(e) {
+                console.error("Auth Error:", e);
+                showToast("NPM ID Bağlantı Hatası", 3000);
+            }
+        }
+
+        onAuthStateChanged(auth, user => {
+            currentUser = user;
+            if(user) {
+                updateCloudUI();
+                // Hesaba ilk girişte otomatik yükle (Eğer onaylıysa)
+                if(!localStorage.getItem('cloud_loaded_once') && !user.isAnonymous && user.emailVerified) {
+                    loadFromCloud(false); 
+                    localStorage.setItem('cloud_loaded_once', 'true');
+                }
+            } else {
+                // Çıkış yapıldıysa misafir olarak geri dön
+                signInAnonymously(auth);
+            }
+        });
+
+        // --- AUTH ACTIONS ---
+        document.getElementById('btn-register').onclick = async () => {
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-pass').value;
+            const kvkk = document.getElementById('kvkk-check').checked;
+
+            if(!email || !pass) return showToast("E-posta ve şifre boş bırakılamaz!");
+            if(!kvkk) return showToast("Kayıt olmak için Aydınlatma Metni'ni kabul etmelisiniz!", 3500);
+
+            try {
+                const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                await sendEmailVerification(cred.user);
+                showToast("Kayıt başarılı! Lütfen e-postanızı onaylayın.", 4000);
+            } catch(e) { showToast(getAuthErrorMsg(e.code)); }
+        };
+
+        document.getElementById('btn-login').onclick = async () => {
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-pass').value;
+            if(!email || !pass) return showToast("E-posta ve şifre boş bırakılamaz!");
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                showToast("Giriş başarılı!");
+            } catch(e) { showToast(getAuthErrorMsg(e.code)); }
+        };
+
+        document.getElementById('btn-resend-verify').onclick = async () => {
+            if(currentUser) {
+                try {
+                    await sendEmailVerification(currentUser);
+                    showToast("Onay e-postası tekrar gönderildi.");
+                } catch(e) { showToast("Bir süre bekleyip tekrar deneyin."); }
+            }
+        };
+
+        document.getElementById('btn-check-verify').onclick = async () => {
+            if(currentUser) {
+                await currentUser.reload();
+                updateCloudUI();
+                if(auth.currentUser.emailVerified) showToast("Hesap onaylandı! Senkronizasyon açık.");
+                else showToast("Henüz onaylanmamış. Lütfen e-postanızı kontrol edin.", 3000);
+            }
+        };
+
+        document.querySelectorAll('.btn-logout-action').forEach(btn => {
+            btn.onclick = async () => {
+                await signOut(auth);
+                document.getElementById('auth-email').value = '';
+                document.getElementById('auth-pass').value = '';
+                showToast("Çıkış yapıldı.");
+            };
+        });
+
+        // --- DATA SYNC ---
+        async function saveToCloud(silent = false) {
+            if(!currentUser) return;
+            const payload = {
+                coins: state.coins,
+                inventory: SHOP_ITEMS,
+                equipped: state.equipped,
+                quests: quests,
+                timestamp: new Date().toISOString()
+            };
+            try {
+                // Kural 1 İhlali olmaması için format: artifacts/{appId}/users/{userId}/{collectionName}/{docId}
+                // Ama collection Name'in data olmasını zorunlu tutmadığı sürece bu ok.
+                const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'gamedata', 'hizlitikla');
+                await setDoc(docRef, payload);
+                if(!silent) showToast('☁️ Buluta Kaydedildi!');
+            } catch(e) {
+                console.error(e);
+                if(!silent) showToast('❌ Kayıt Başarısız!');
+            }
+        }
+
+        async function loadFromCloud(showMsg = true) {
+            if(!currentUser) { showToast("NPM Bulut Hesabına bağlı değilsiniz."); return; }
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'gamedata', 'hizlitikla');
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    state.coins = data.coins || 0;
+                    if(data.inventory) SHOP_ITEMS = data.inventory;
+                    if(data.equipped) state.equipped = data.equipped;
+                    if(data.quests) quests = data.quests;
+                    
+                    saveToLocal(); // Yereli güncelle
+                    updateUI();
+                    applyBackground();
+                    if(showMsg) showToast('📥 Veriler Buluttan Yüklendi!');
+                } else {
+                    if(showMsg) showToast('☁️ Bulutta veri bulunamadı.');
+                }
+            } catch(e) {
+                console.error(e);
+                if(showMsg) showToast('❌ Yükleme Başarısız!');
+            }
+        }
+
+        function triggerAutoSave() {
+            if(!state.autoSave || !currentUser) return;
+            clearTimeout(cloudDebounceTimeout);
+            cloudDebounceTimeout = setTimeout(() => { saveToCloud(true); }, 2000);
+        }
+
+        function saveToLocal() {
+            localStorage.setItem('coins', state.coins);
+            localStorage.setItem('shopInventory', JSON.stringify(SHOP_ITEMS));
+            localStorage.setItem('equipped', JSON.stringify(state.equipped));
+            localStorage.setItem('dailyQ', JSON.stringify(quests.daily));
+            localStorage.setItem('weeklyQ', JSON.stringify(quests.weekly));
+            localStorage.setItem('autoSave', state.autoSave);
+            triggerAutoSave();
+        }
+
+        // --- GAME LOGIC ---
         function init(){
+            state.autoSave = localStorage.getItem('autoSave') !== 'false'; // default true
+            document.getElementById('auto-save-toggle').checked = state.autoSave;
+
             try {
                 state.coins = parseInt(localStorage.getItem('coins')) || 0;
                 const savedShop = JSON.parse(localStorage.getItem('shopInventory'));
@@ -350,21 +721,16 @@
                     localStorage.setItem('qWeek', w);
                 } else quests.weekly = JSON.parse(localStorage.getItem('weeklyQ')) || [];
 
-            } catch(e) { localStorage.clear(); }
+            } catch(e) { console.error("Local Load Err", e); }
 
             applyBackground();
             updateUI(); setupEvents();
+            initCloudAuth();
             document.body.addEventListener('click',()=>AudioSys.init(),{once:true});
         }
 
         function generateRandomQuests(count, mult) {
-            const tpls = [
-                {txt:"X Kere Tıkla", t:"clicks", min:30, max:80},
-                {txt:"X Boss Yen", t:"boss", min:2, max:6},
-                {txt:"X Puan Yap", t:"points", min:300, max:800},
-                {txt:"X Kez Yan", t:"fails", min:3, max:10},
-                {txt:"X Para Biriktir", t:"coins_earned", min:50, max:150}
-            ];
+            const tpls = [ {txt:"X Kere Tıkla", t:"clicks", min:30, max:80}, {txt:"X Boss Yen", t:"boss", min:2, max:6}, {txt:"X Puan Yap", t:"points", min:300, max:800}, {txt:"X Kez Yan", t:"fails", min:3, max:10}, {txt:"X Para Biriktir", t:"coins_earned", min:50, max:150} ];
             let res = [];
             for(let i=0;i<count;i++){
                 let t = tpls[Math.floor(Math.random()*tpls.length)];
@@ -374,53 +740,6 @@
             return res;
         }
 
-        function setupEvents(){
-            document.getElementById('play-button').onclick=()=>showScreen('game-area');
-            document.getElementById('menu-shop-button').onclick=()=>{showScreen('shop-screen');renderShop()};
-            document.getElementById('menu-quests-achievements-button').onclick=()=>{showScreen('qa-screen');renderQuests()};
-            document.getElementById('menu-scores-button').onclick=()=>{showScreen('scores-screen');renderScores('all')};
-            document.getElementById('menu-tutorial-button').onclick=()=>document.getElementById('tutorial-overlay').style.display='flex';
-            document.getElementById('close-tutorial').onclick=()=>document.getElementById('tutorial-overlay').style.display='none';
-            
-            // SIFIRLA VE ADMIN (YENİ HİLE EKLENDİ)
-            document.getElementById('reset-data-button').onclick=()=>{ 
-                if(confirm("Tüm ilerlemen silinecek! Emin misin?")) { localStorage.clear(); location.reload(); } 
-            };
-            document.getElementById('admin-login-button').onclick=()=>{ 
-                const input = prompt("Admin Komutu:");
-                if(input.startsWith('!')) {
-                    const amount = parseInt(input.substring(1));
-                    if(!isNaN(amount)) {
-                        state.coins += amount;
-                        saveData(); updateUI();
-                        alert(`${amount} Para Eklendi!`);
-                    } else {
-                        alert("Geçersiz kod!");
-                    }
-                } else if(input === 'NPM5') {
-                     // Eski kod desteği
-                     state.coins = 9999999;
-                     saveData(); updateUI(); alert("Sınırsız Para!");
-                } else {
-                    alert("Hatalı!");
-                }
-            };
-
-            document.getElementById('shop-back-button').onclick=()=>showScreen('main-menu');
-            document.getElementById('quest-back-button').onclick=()=>showScreen('main-menu');
-            document.getElementById('score-back-button').onclick=()=>showScreen('main-menu');
-            document.getElementById('initial-back-button').onclick=()=>showScreen('main-menu');
-            document.getElementById('back-to-menu-button').onclick=()=>{stopGame();showScreen('main-menu')};
-            
-            document.getElementById('start-game-button').onclick=startGame;
-            document.getElementById('reset-button').onclick=startGame;
-            document.getElementById('sound-toggle').onclick=(e)=>{AudioSys.enabled=!AudioSys.enabled;e.target.textContent=AudioSys.enabled?'🔊':'🔇';if(AudioSys.enabled)AudioSys.init()};
-            
-            document.getElementById('menu-shop-button').addEventListener('click', renderShop);
-        }
-
-        function showScreen(id){els.screens.forEach(s=>s.style.display='none');document.getElementById(id).style.display='flex';}
-        
         function updateUI(){
             els.coin.textContent=state.coins; els.shopCoins.textContent=state.coins;
             const shield = SHOP_ITEMS.consumable.find(x=>x.id==='con_shield');
@@ -429,6 +748,14 @@
             if(head) document.getElementById('headstart-status').textContent = `🚀 Boost: ${head.count}`;
         }
 
+        function applyBackground() {
+            const bgItem = SHOP_ITEMS.cosmetic.find(x => x.id === state.equipped.bg);
+            const bgLayer = document.getElementById('bg-layer');
+            bgLayer.className = ''; 
+            if(bgItem) { bgLayer.classList.add(bgItem.css); } else { bgLayer.classList.add('bg-default'); }
+        }
+
+        // --- GAMEPLAY ---
         function startGame(){
             if(state.active)return;
             state.active=true; state.score=0; state.activePower = null; els.powerStatus.textContent = '';
@@ -436,7 +763,7 @@
             
             let boost = 0;
             const boostItem = SHOP_ITEMS.consumable.find(x=>x.id==='con_head');
-            if(boostItem && boostItem.count > 0) { boostItem.count--; boost = 5; saveData(); }
+            if(boostItem && boostItem.count > 0) { boostItem.count--; boost = 5; saveToLocal(); }
 
             state.time = (diff==='easy'?45:(diff==='hard'?20:30)) + boost;
             
@@ -466,7 +793,6 @@
 
         function spawnCircle(){
             if(activeCircles.length>5)return;
-            
             const diff = document.getElementById('difficulty').value;
             let baseSize = diff==='hard' ? 40 : 60;
             if(state.activePower === 'giant') baseSize *= 1.5;
@@ -488,15 +814,12 @@
             let type='good'; if(r<0.2)type='bad';else if(r<0.25)type='power-up';else if(r<0.3)type='boss';
             
             const el=document.createElement('div');
-            let css=type==='good' ? getSkinClass() : type;
+            let css=type==='good' ? (SHOP_ITEMS.cosmetic.find(x=>x.id===state.equipped.skin)?.css || 'skin-default') : type;
             el.className=`circle ${css}`;
             el.style.left=x+'px'; el.style.top=y+'px';
             el.style.width=baseSize+'px'; el.style.height=baseSize+'px';
             el.dataset.type=type; 
-            if(type==='boss') {
-                const slayer = SHOP_ITEMS.upgrade.find(u=>u.id==='upg_boss').owned;
-                el.dataset.hp = slayer ? 2 : 3; 
-            }
+            if(type==='boss') el.dataset.hp = SHOP_ITEMS.upgrade.find(u=>u.id==='upg_boss').owned ? 2 : 3; 
 
             const hit=(e)=>{e.preventDefault();e.stopPropagation();hitCircle(el)};
             el.addEventListener('touchstart',hit); el.addEventListener('mousedown',hit);
@@ -504,16 +827,13 @@
             els.gameCont.appendChild(el); activeCircles.push(el);
             requestAnimationFrame(()=>el.classList.add('active'));
 
-            let stay=diff==='hard'?1000:1600;
             setTimeout(()=>{
                 if(el.parentNode){
                     if(type !== 'bad') { showText(el, 'KAÇIRDIN!', '#e74c3c'); updateQuest('fails', 1); }
                     removeCircle(el);
                 }
-            },stay);
+            }, diff==='hard'?1000:1600);
         }
-
-        function getSkinClass() { const s = SHOP_ITEMS.cosmetic.find(x=>x.id===state.equipped.skin); return s ? s.css : 'skin-default'; }
 
         function hitCircle(el){
             const type=el.dataset.type;
@@ -522,7 +842,7 @@
             if(type==='bad'){
                 const shield = SHOP_ITEMS.consumable.find(x=>x.id==='con_shield');
                 if(shield && shield.count > 0) {
-                    shield.count--; AudioSys.play('pop'); showText(el, 'KURTULDUN!', '#3498db'); saveData(); updateUI();
+                    shield.count--; AudioSys.play('pop'); showText(el, 'KURTULDUN!', '#3498db'); saveToLocal(); updateUI();
                 } else {
                     state.score-=5; AudioSys.play('bad'); showText(el,'-5','red'); updateQuest('fails',1);
                 }
@@ -530,25 +850,20 @@
                 let hp=parseInt(el.dataset.hp)-1;el.dataset.hp=hp;
                 el.style.transform=`scale(${1+(0.2*(3-hp))})`; AudioSys.play('pop');
                 if(hp>0)return;
-                pts=10; updateQuest('boss',1); AudioSys.play('coin'); showText(el,'BOSS!','gold');
-                spawnParticle(el);
+                pts=10; updateQuest('boss',1); AudioSys.play('coin'); showText(el,'BOSS!','gold'); spawnParticle(el);
             } else if(type==='power-up'){
-                const powers = ['time', 'double', 'giant'];
-                const chosen = powers[Math.floor(Math.random() * powers.length)];
+                const powers = ['time', 'double', 'giant']; const chosen = powers[Math.floor(Math.random() * powers.length)];
                 AudioSys.play('coin');
                 if(chosen === 'time') { state.time+=5; showText(el,'+5sn','purple'); }
-                else if(chosen === 'double') { activatePower('double'); showText(el, '2X PUAN', 'orange'); }
-                else if(chosen === 'giant') { activatePower('giant'); showText(el, 'DEV MOD', 'cyan'); }
+                else if(chosen === 'double') { state.activePower = 'double'; els.powerStatus.textContent='⚡ 2X PUAN'; showText(el, '2X PUAN', 'orange'); clearTimeout(powerTimeout); powerTimeout=setTimeout(()=>state.activePower=null, SHOP_ITEMS.upgrade.find(u=>u.id==='upg_time').owned?8000:5000); }
+                else if(chosen === 'giant') { state.activePower = 'giant'; els.powerStatus.textContent='🔵 DEV MOD'; showText(el, 'DEV MOD', 'cyan'); clearTimeout(powerTimeout); powerTimeout=setTimeout(()=>state.activePower=null, SHOP_ITEMS.upgrade.find(u=>u.id==='upg_time').owned?8000:5000); }
             } else {
                 pts=1; AudioSys.play('pop'); showText(el,'+1','#2ecc71'); spawnParticle(el);
             }
             
             if(state.activePower === 'double' && pts > 0) pts *= 2;
             state.score+=pts; 
-            if(pts>0) { 
-                let gain=1; if(SHOP_ITEMS.upgrade.find(u=>u.id==='upg_coin').owned) gain=2;
-                state.coins+=gain; updateQuest('coins_earned', gain); 
-            }
+            if(pts>0) { let gain=SHOP_ITEMS.upgrade.find(u=>u.id==='upg_coin').owned?2:1; state.coins+=gain; updateQuest('coins_earned', gain); }
             if(state.score>=500) updateQuest('points',500);
             els.score.textContent=state.score; updateUI(); removeCircle(el,true);
         }
@@ -561,29 +876,17 @@
             els.gameCont.appendChild(p); setTimeout(()=>p.remove(), 1000);
         }
 
-        function activatePower(type) {
-            state.activePower = type; clearTimeout(powerTimeout);
-            els.powerStatus.textContent = type === 'double' ? '⚡ 2X PUAN AKTİF!' : '🔵 DEV MOD AKTİF!';
-            const dur = SHOP_ITEMS.upgrade.find(u=>u.id==='upg_time').owned ? 8000 : 5000;
-            powerTimeout = setTimeout(() => { state.activePower = null; els.powerStatus.textContent = ''; }, dur);
-        }
-
-        function removeCircle(el,clicked=false){
-            el.classList.remove('active'); if(clicked)el.classList.add('explode');
-            setTimeout(()=>{if(el.parentNode)el.remove()},200); activeCircles=activeCircles.filter(c=>c!==el);
-        }
+        function removeCircle(el,clicked=false){ el.classList.remove('active'); if(clicked)el.classList.add('explode'); setTimeout(()=>{if(el.parentNode)el.remove()},200); activeCircles=activeCircles.filter(c=>c!==el); }
 
         function endGame(){
-            stopGame(); AudioSys.play('bad'); alert(`Süre Doldu! Puan: ${state.score}`);
-            saveScore(state.score); saveData();
+            stopGame(); AudioSys.play('bad'); 
+            showToast(`Oyun Bitti! Skor: ${state.score}`);
+            saveScore(state.score); saveToLocal();
             document.getElementById('end-game-buttons').style.display='flex';
             document.getElementById('difficulty').disabled=false; document.getElementById('player-name').disabled=false;
         }
 
-        function stopGame(){
-            state.active=false; clearTimeout(spawnTimeout); clearInterval(timerInterval);
-            activeCircles.forEach(c=>c.remove()); activeCircles=[]; state.activePower = null; els.powerStatus.textContent = '';
-        }
+        function stopGame(){ state.active=false; clearTimeout(spawnTimeout); clearInterval(timerInterval); activeCircles.forEach(c=>c.remove()); activeCircles=[]; state.activePower = null; els.powerStatus.textContent = ''; }
 
         function showText(el,txt,col){
             const f=document.getElementById('feedback'); f.textContent=txt; f.style.color=col;
@@ -591,76 +894,67 @@
             f.style.transition='none'; requestAnimationFrame(()=>{f.style.transition='all 0.5s';f.style.transform='translateY(-40px)';f.style.opacity=0});
         }
 
-        window.filterShop = (cat) => {
-            currentShopFilter = cat;
-            document.querySelectorAll('.shop-tab').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            renderShop();
-        }
-
+        // --- SHOP & UI RENDERERS ---
         function renderShop(){
             const list = document.getElementById('shop-list'); list.innerHTML = '';
             const items = SHOP_ITEMS[currentShopFilter];
             items.forEach(item => {
                 const div = document.createElement('div'); div.className = 'shop-item';
-                let btnTxt, btnBg, onClick;
+                let btnTxt, btnBg, onClickAttr;
                 if(item.type === 'consumable') {
-                    btnTxt = `${item.price} 💰 (${item.count})`; btnBg = '#f1c40f'; onClick = `buyItem('${item.type}', '${item.id}')`;
+                    btnTxt = `${item.price} 💰 (${item.count})`; btnBg = '#f1c40f';
                 } else if (item.type === 'upgrade') {
-                    btnTxt = item.owned ? 'SAHİPLİ' : `${item.price} 💰`; btnBg = item.owned ? '#7f8c8d' : '#e67e22'; onClick = item.owned ? '' : `buyItem('${item.type}', '${item.id}')`;
+                    btnTxt = item.owned ? 'SAHİPLİ' : `${item.price} 💰`; btnBg = item.owned ? '#7f8c8d' : '#e67e22';
                 } else {
                     const isEq = state.equipped[item.type] === item.id;
                     btnTxt = item.owned ? (isEq ? 'SEÇİLİ' : 'SEÇ') : `${item.price} 💰`;
                     btnBg = item.owned ? (isEq ? '#7f8c8d' : '#2ecc71') : '#f1c40f';
-                    onClick = `buyItem('${item.type}', '${item.id}')`;
                 }
-                let preview = `<div class="shop-preview ${item.css || ''}">${item.emoji || ''}</div>`;
-                div.innerHTML = `${preview}<h4>${item.name}</h4><div class="shop-desc">${item.desc||''}</div><button style="background:${btnBg};padding:5px;font-size:0.8em;width:100%;border-radius:8px;border:none;color:white;" onclick="${onClick}">${btnTxt}</button>`;
+                
+                div.innerHTML = `<div class="shop-preview ${item.css || ''}">${item.emoji || ''}</div>
+                                 <h4>${item.name}</h4><div class="shop-desc">${item.desc||''}</div>
+                                 <button class="buy-btn" data-cat="${item.type}" data-id="${item.id}" style="background:${btnBg};padding:5px;font-size:0.8em;width:100%;border-radius:8px;border:none;color:white;">${btnTxt}</button>`;
                 if(item.owned || item.count > 0) div.classList.add('item-owned');
                 list.appendChild(div);
             });
+
+            document.querySelectorAll('.buy-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const cat = btn.getAttribute('data-cat'); const id = btn.getAttribute('data-id');
+                    let group = cat === 'skin' || cat === 'bg' || cat === 'part' ? 'cosmetic' : cat;
+                    let item = SHOP_ITEMS[group].find(x => x.id === id);
+                    
+                    if(item.type === 'consumable') {
+                        if(state.coins >= item.price) { state.coins -= item.price; item.count++; AudioSys.play('coin'); } else { AudioSys.play('bad'); showToast('Yetersiz Bakiye'); }
+                    } else if(item.owned) {
+                        if(group === 'cosmetic') { state.equipped[item.type] = id; if(item.type === 'bg') applyBackground(); }
+                    } else {
+                        if(state.coins >= item.price) { state.coins -= item.price; item.owned = true; if(group === 'cosmetic') { state.equipped[item.type] = id; if(item.type === 'bg') applyBackground(); } AudioSys.play('coin'); } else { AudioSys.play('bad'); showToast('Yetersiz Bakiye'); }
+                    }
+                    saveToLocal(); updateUI(); renderShop();
+                };
+            });
         }
 
-        window.buyItem = (cat, id) => {
-            let group = cat === 'skin' || cat === 'bg' || cat === 'part' ? 'cosmetic' : cat;
-            let item = SHOP_ITEMS[group].find(x => x.id === id);
-            if(item.type === 'consumable') {
-                if(state.coins >= item.price) { state.coins -= item.price; item.count++; AudioSys.play('coin'); } else { AudioSys.play('bad'); alert('Yetersiz Bakiye'); }
-            } else if(item.owned) {
-                if(group === 'cosmetic') { state.equipped[item.type] = id; if(item.type === 'bg') applyBackground(); }
-            } else {
-                if(state.coins >= item.price) { state.coins -= item.price; item.owned = true; if(group === 'cosmetic') { state.equipped[item.type] = id; if(item.type === 'bg') applyBackground(); } AudioSys.play('coin'); } else { AudioSys.play('bad'); alert('Yetersiz Bakiye'); }
-            }
-            saveData(); updateUI(); renderShop();
-        };
-
-        function applyBackground() {
-            const bgItem = SHOP_ITEMS.cosmetic.find(x => x.id === state.equipped.bg);
-            const bgLayer = document.getElementById('bg-layer');
-            bgLayer.className = ''; // Sıfırla
-            if(bgItem) { bgLayer.classList.add(bgItem.css); } else { bgLayer.classList.add('bg-default'); }
-        }
-
-        function saveData() {
-            localStorage.setItem('coins', state.coins);
-            localStorage.setItem('shopInventory', JSON.stringify(SHOP_ITEMS));
-            localStorage.setItem('equipped', JSON.stringify(state.equipped));
-            localStorage.setItem('dailyQ', JSON.stringify(quests.daily));
-            localStorage.setItem('weeklyQ', JSON.stringify(quests.weekly));
-        }
-
-        window.switchTab = (tab) => { currentQuestView = tab; document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); renderQuests(); }
         function renderQuests(){
             const list=document.getElementById('quest-list'); list.innerHTML='';
             const arr = currentQuestView === 'daily' ? quests.daily : quests.weekly;
             arr.forEach((q,i)=>{
-                const btn=q.done&&!q.collected?`<button onclick="claimQ(${i})" style="background:#f1c40f;margin-top:5px;padding:5px;">Ödül (${q.reward})</button>`:'';
+                const btn=q.done&&!q.collected?`<button class="claim-btn" data-index="${i}" style="background:#f1c40f;margin-top:5px;padding:5px;">Ödül (${q.reward})</button>`:'';
                 const st=q.collected?'✅':`${q.curr}/${q.target}`;
                 list.innerHTML+=`<div class="list-item ${q.done?'done':''}"><b>${q.desc}</b><br>${st}${btn}</div>`;
             });
+            document.querySelectorAll('.claim-btn').forEach(b => {
+                b.onclick = () => {
+                    const idx = b.getAttribute('data-index');
+                    const arr = currentQuestView === 'daily' ? quests.daily : quests.weekly;
+                    arr[idx].collected = true; state.coins += arr[idx].reward; AudioSys.play('coin');
+                    saveToLocal(); updateUI(); renderQuests();
+                };
+            });
         }
-        window.claimQ=(i)=>{ const arr = currentQuestView === 'daily' ? quests.daily : quests.weekly; arr[i].collected=true; state.coins+=arr[i].reward; AudioSys.play('coin'); saveData(); updateUI(); renderQuests(); };
-        function updateQuest(t,v){ ['daily','weekly'].forEach(cat=>{ quests[cat].forEach(q=>{ if(q.type===t){ if(!q.done)q.curr+=v; if(q.curr>=q.target)q.done=true; }}); }); saveData(); }
+
+        function updateQuest(t,v){ ['daily','weekly'].forEach(cat=>{ quests[cat].forEach(q=>{ if(q.type===t){ if(!q.done)q.curr+=v; if(q.curr>=q.target)q.done=true; }}); }); saveToLocal(); }
         
         function saveScore(s){
             const n=document.getElementById('player-name').value||'Oyuncu'; const d=document.getElementById('difficulty').value;
@@ -668,15 +962,89 @@
             let a=JSON.parse(localStorage.getItem('sa'))||[]; a.push({name:n,score:s,diff:d}); a.sort((x,y)=>y.score-x.score);
             localStorage.setItem('sw',JSON.stringify(w.slice(0,10))); localStorage.setItem('sa',JSON.stringify(a.slice(0,10)));
         }
-        window.renderScores=(t)=>{
+
+        function renderScores(t){
             const list=document.getElementById('score-list'); list.innerHTML='';
             const d=JSON.parse(localStorage.getItem(t==='weekly'?'sw':'sa'))||[];
             if(!d.length)list.innerHTML='<p style="text-align:center">Yok</p>';
             d.forEach((s,i)=>list.innerHTML+=`<div class="list-item"><b>${i+1}. ${s.name}</b> (${s.diff}) <span style="float:right;color:#e74c3c">${s.score}</span></div>`);
         }
 
+        // --- EVENT LISTENERS ---
+        function setupEvents(){
+            // Navigation
+            document.getElementById('play-button').onclick=()=>showScreen('game-area');
+            document.getElementById('menu-shop-button').onclick=()=>{showScreen('shop-screen');renderShop()};
+            document.getElementById('menu-quests-achievements-button').onclick=()=>{showScreen('qa-screen');renderQuests()};
+            document.getElementById('menu-scores-button').onclick=()=>{showScreen('scores-screen');renderScores('all')};
+            document.getElementById('menu-cloud-button').onclick=()=>{
+                showScreen('cloud-screen');
+                showToast('ℹ️ Sadece NPM Oyunları içindir (Diğer NPM Uygulamaları dahil değildir).', 4500);
+            };
+            document.getElementById('menu-tutorial-button').onclick=()=>document.getElementById('tutorial-overlay').style.display='flex';
+            document.getElementById('close-tutorial').onclick=()=>document.getElementById('tutorial-overlay').style.display='none';
+            
+            // KVKK Events
+            document.getElementById('open-kvkk').onclick=()=>document.getElementById('kvkk-modal').style.display='flex';
+            document.getElementById('close-kvkk').onclick=()=>document.getElementById('kvkk-modal').style.display='none';
+
+            // Back Buttons
+            document.getElementById('shop-back-button').onclick=()=>showScreen('main-menu');
+            document.getElementById('quest-back-button').onclick=()=>showScreen('main-menu');
+            document.getElementById('score-back-button').onclick=()=>showScreen('main-menu');
+            document.getElementById('initial-back-button').onclick=()=>showScreen('main-menu');
+            document.getElementById('back-to-menu-button').onclick=()=>{stopGame();showScreen('main-menu')};
+            document.getElementById('cloud-back-button').onclick=()=>showScreen('main-menu');
+            
+            // Actions
+            document.getElementById('start-game-button').onclick=startGame;
+            document.getElementById('reset-button').onclick=startGame;
+            document.getElementById('sound-toggle').onclick=(e)=>{AudioSys.enabled=!AudioSys.enabled;e.target.textContent=AudioSys.enabled?'🔊':'🔇';if(AudioSys.enabled)AudioSys.init()};
+            
+            // Admin & Reset (No alerts)
+            document.getElementById('reset-data-button').onclick=()=> {
+                askConfirm("Tüm YEREL ilerlemen silinecek! Emin misin?", (yes) => {
+                    if(yes) { localStorage.clear(); location.reload(); }
+                });
+            };
+            document.getElementById('admin-login-button').onclick=()=> {
+                askPrompt("Admin Komutu Girin:", (input) => {
+                    if(!input) return;
+                    if(input.startsWith('!')) {
+                        const amount = parseInt(input.substring(1));
+                        if(!isNaN(amount)) { state.coins += amount; saveToLocal(); updateUI(); showToast(`${amount} Para Eklendi!`); }
+                    } else if(input === 'NPM5') {
+                        state.coins = 9999999; saveToLocal(); updateUI(); showToast("Sınırsız Para Aktif!");
+                    } else { showToast("Hatalı Komut!"); }
+                });
+            };
+
+            // Cloud specific
+            document.getElementById('cloud-save-btn').onclick = () => saveToCloud(false);
+            document.getElementById('cloud-load-btn').onclick = () => loadFromCloud(true);
+            document.getElementById('auto-save-toggle').onchange = (e) => {
+                state.autoSave = e.target.checked;
+                saveToLocal();
+                showToast(state.autoSave ? "Otomatik Kayıt: AÇIK" : "Otomatik Kayıt: KAPALI");
+            };
+
+            // Tabs
+            document.querySelectorAll('.shop-tab').forEach(b => b.onclick = (e) => {
+                currentShopFilter = e.target.getAttribute('data-tab');
+                document.querySelectorAll('.shop-tab').forEach(x => x.classList.remove('active'));
+                e.target.classList.add('active'); renderShop();
+            });
+            document.querySelectorAll('.q-tab').forEach(b => b.onclick = (e) => {
+                currentQuestView = e.target.getAttribute('data-qtab');
+                document.querySelectorAll('.q-tab').forEach(x => x.classList.remove('active'));
+                e.target.classList.add('active'); renderQuests();
+            });
+            document.querySelectorAll('.score-tab').forEach(b => b.onclick = (e) => {
+                renderScores(e.target.getAttribute('data-stab'));
+            });
+        }
+
         init();
     </script>
 </body>
-
 </html>
