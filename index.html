@@ -107,7 +107,7 @@
 
         #power-status { height: 25px; width: 90%; margin-bottom: 5px; text-align: center; font-weight: bold; font-size: 1.2em; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; color: white; }
 
-        /* OYUN EKRANI DİNAMİK (JS İLE BOOTLANIR) */
+        /* OYUN EKRANI DİNAMİK */
         #game-container { 
             position: relative; background: rgba(255,255,255,0.95); border: 4px solid #34495e; border-radius: 20px; 
             overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15); cursor: crosshair; z-index: 5;
@@ -512,12 +512,11 @@
     </div>
 
     <!-- SANDBOX SETTINGS MODAL -->
-    <div id="sandbox-settings-modal" class="overlay-screen" style="z-index: 2500;">
+    <div id="sandbox-settings-modal" class="overlay-screen" style="z-index: 3500;">
         <div class="overlay-content" style="max-width: 450px;">
             <h2 style="color:#2c3e50; margin-top:0; border-bottom: 2px solid #eee; padding-bottom:10px;">🛠️ Sandbox Ayarları</h2>
             
             <div class="scroll-content" style="max-height: 50vh; padding-right: 5px;">
-                <!-- Ekran Boyutu Eklendi -->
                 <div class="sandbox-setting-row">
                     <label>Ekran Genişliği:</label>
                     <select id="sb-width" style="flex:1;">
@@ -639,10 +638,13 @@
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <label style="font-size:0.8em; font-weight:bold; color:#7f8c8d;">Oyun Modu:</label>
-                    <select id="dl-mode" class="color-picker" style="width:150px; margin:0;" disabled>
-                        <option value="classic">Klasik</option>
-                        <option value="sandbox">Sandbox Kuralları</option>
-                    </select>
+                    <div style="display:flex; gap:5px;">
+                        <button id="dl-btn-sb-settings" style="display:none; background:#8e44ad; border:none; border-radius:8px; color:white; font-size:0.8em; padding:0 10px; cursor:pointer;">⚙️ Ayar</button>
+                        <select id="dl-mode" class="color-picker" style="width:130px; margin:0;" disabled>
+                            <option value="classic">Klasik</option>
+                            <option value="sandbox">Sandbox</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -760,7 +762,7 @@
         
         let SHOP_ITEMS = JSON.parse(JSON.stringify(SHOP_ITEMS_TEMPLATE));
         let state = { coins:0, score:0, time:30, active:false, activePower: null, equipped: { skin:'skin_def', bg:'bg_def', part:'part_def' }, autoSave: true, activeMode: 'classic', p1Score: 0, p2Score: 0 };
-        // Sandbox Ekran boyutları eklendi
+        // Sandbox Ekran boyutları ve değerleri
         let sandboxSettings = { time:30, goodPts:1, badPts:5, bossHp:3, bossPts:10, bossProb:5, powProb:5, badProb:20, width: '550', height: '75vh' };
         let activeCircles=[], spawnTimeout, timerInterval, powerTimeout;
         let quests = { daily: [], weekly: [] };
@@ -962,7 +964,9 @@
                     host: { name: dName, color: 'blue', ready: false, score: 0 },
                     guest: { id: currentFriendProfileId, name: document.getElementById('fp-name').textContent, color: 'default', ready: false, score: 0 }
                 });
-                await setDoc(doc(db, 'artifacts', appId, 'users', currentFriendProfileId, 'invites', duelId), { hostName: dName, timestamp: new Date().getTime() });
+                
+                // Mermi hızında saat kayması olmadan daveti yolluyoruz
+                await setDoc(doc(db, 'artifacts', appId, 'users', currentFriendProfileId, 'invites', duelId), { hostName: dName });
                 
                 showToast("Davet Gönderildi! Lobiye Geçiliyor...");
                 openDuelLobby(duelId, true);
@@ -976,7 +980,7 @@
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
                         const data = change.doc.data();
-                        if(new Date().getTime() - data.timestamp > 60000) { deleteDoc(change.doc.ref); return; }
+                        // Saat kayması bug'ı kaldırıldı, davet anında ekrana düşer
                         showInviteToast(change.doc.id, data.hostName);
                     }
                 });
@@ -993,12 +997,13 @@
                     <button class="btn-decline" style="background:#e74c3c; padding:8px 15px; border-radius:10px; border:none; color:white; font-weight:bold; cursor:pointer;">REDDET</button>
                 </div>
             `;
-            const delInvite = () => deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'invites', duelId)).catch(e=>console.error(e));
+            const delInvite = () => deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'invites', duelId)).catch(e=>{});
             
             div.querySelector('.btn-accept').onclick = () => { div.remove(); delInvite(); openDuelLobby(duelId, false); };
             div.querySelector('.btn-decline').onclick = () => { div.remove(); delInvite(); };
             container.appendChild(div);
-            setTimeout(() => { if(div.parentNode) { div.remove(); delInvite(); } }, 15000);
+            // Ekranda kalma süresi tam 60 saniyeye çıkarıldı (15 saniye bug'ı çözüldü)
+            setTimeout(() => { if(div.parentNode) { div.remove(); delInvite(); } }, 60000);
         }
 
         function openDuelLobby(duelId, isHost) {
@@ -1010,14 +1015,17 @@
             const dlColor1 = document.getElementById('dl-p1-color');
             const dlColor2 = document.getElementById('dl-p2-color');
             const btnReady = document.getElementById('dl-btn-ready');
+            const btnAyar = document.getElementById('dl-btn-sb-settings');
             
             if(isHost) { 
                 dlDiff.disabled = false; dlMode.disabled = false; 
                 document.getElementById('dl-host-crown').style.display = 'block'; 
                 dlMode.value = state.activeMode === 'sandbox' ? 'sandbox' : 'classic';
+                btnAyar.style.display = dlMode.value === 'sandbox' ? 'block' : 'none';
             } else { 
                 dlDiff.disabled = true; dlMode.disabled = true; 
                 document.getElementById('dl-host-crown').style.display = 'none'; 
+                btnAyar.style.display = 'none';
             }
             
             btnReady.textContent = "HAZIRIM"; btnReady.style.background = "#2ecc71";
@@ -1025,7 +1033,17 @@
 
             dlColor1.onchange = () => updateLobbyState({ [`${duelState.role}.color`]: dlColor1.value });
             dlDiff.onchange = () => { if(isHost) updateLobbyState({ difficulty: dlDiff.value }); };
-            dlMode.onchange = () => { if(isHost) updateLobbyState({ mode: dlMode.value, sandboxSettings: dlMode.value === 'sandbox' ? sandboxSettings : null }); };
+            
+            // Host Lobi içinden Modu Sandbox yaparsa kendi lokal ayarlarını dayatır
+            dlMode.onchange = () => { 
+                if(isHost) {
+                    btnAyar.style.display = dlMode.value === 'sandbox' ? 'block' : 'none';
+                    updateLobbyState({ 
+                        mode: dlMode.value, 
+                        sandboxSettings: dlMode.value === 'sandbox' ? sandboxSettings : null 
+                    }); 
+                }
+            };
 
             if(unsubscribeDuel) unsubscribeDuel();
             unsubscribeDuel = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'duels', duelId), (docSnap) => {
@@ -1105,11 +1123,22 @@
             duelState.friendColor = duelState.isHost ? data.guest.color : data.host.color;
             
             document.getElementById('difficulty').value = data.difficulty;
+            
+            // Eğer lobide sandbox seçiliyse tüm ayarları garantili (sayısal) şekilde alırız
             if(data.mode === 'sandbox' && data.sandboxSettings) {
-                sandboxSettings = data.sandboxSettings; // Host'un ayarları kopyalanır
+                sandboxSettings.time = Number(data.sandboxSettings.time) || 30;
+                sandboxSettings.goodPts = Number(data.sandboxSettings.goodPts) || 1;
+                sandboxSettings.badPts = Number(data.sandboxSettings.badPts) || 5;
+                sandboxSettings.bossHp = Number(data.sandboxSettings.bossHp) || 3;
+                sandboxSettings.bossPts = Number(data.sandboxSettings.bossPts) || 10;
+                sandboxSettings.bossProb = Number(data.sandboxSettings.bossProb) || 5;
+                sandboxSettings.powProb = Number(data.sandboxSettings.powProb) || 5;
+                sandboxSettings.badProb = Number(data.sandboxSettings.badProb) || 20;
+                sandboxSettings.width = data.sandboxSettings.width || '550';
+                sandboxSettings.height = data.sandboxSettings.height || '75vh';
             }
             
-            applyModeSettings(); // Ekran boyutunu yeni kurallara göre ayarlar
+            applyModeSettings(); 
             
             document.getElementById('normal-top-info').style.display = 'none'; document.getElementById('normal-power-info').style.display = 'none';
             document.getElementById('prep-panel').style.display = 'none'; document.getElementById('game-start-buttons').style.display = 'none';
@@ -1255,7 +1284,7 @@
                 if(boostItem && boostItem.count > 0) { boostItem.count--; boost = 5; saveToLocal(); }
             }
             
-            if(state.activeMode === 'sandbox') state.time = sandboxSettings.time;
+            if(state.activeMode === 'sandbox') state.time = Number(sandboxSettings.time) || 30;
             else state.time = (diff==='easy'?45:(diff==='hard'?20:30)) + boost;
             
             activeCircles.forEach(c=>c.remove()); activeCircles=[];
@@ -1520,20 +1549,42 @@
             document.getElementById('close-modes-modal').onclick=()=>document.getElementById('modes-modal').style.display='none';
             document.getElementById('close-friend-profile').onclick=()=>document.getElementById('friend-profile-modal').style.display='none';
 
-            // Sandbox Modals
+            // Sandbox Modals & Butonları (Lobi uyumlu hale getirildi)
             document.getElementById('btn-open-sandbox-settings').onclick=()=>{
                 document.getElementById('modes-modal').style.display='none';
                 document.getElementById('sandbox-settings-modal').style.display='flex';
             };
+            document.getElementById('dl-btn-sb-settings').onclick=()=>{
+                document.getElementById('sandbox-settings-modal').style.display='flex';
+            };
             document.getElementById('sb-cancel').onclick=()=>document.getElementById('sandbox-settings-modal').style.display='none';
+            
             document.getElementById('sb-save-start').onclick=()=>{
-                sandboxSettings.time = parseInt(document.getElementById('sb-time').value) || 30; sandboxSettings.goodPts = parseInt(document.getElementById('sb-good-pts').value) || 1; sandboxSettings.badPts = parseInt(document.getElementById('sb-bad-pts').value) || 5;
-                sandboxSettings.bossHp = parseInt(document.getElementById('sb-boss-hp').value) || 3; sandboxSettings.bossPts = parseInt(document.getElementById('sb-boss-pts').value) || 10;
-                sandboxSettings.bossProb = parseInt(document.getElementById('sb-boss-prob').value) || 5; sandboxSettings.powProb = parseInt(document.getElementById('sb-pow-prob').value) || 5; sandboxSettings.badProb = parseInt(document.getElementById('sb-bad-prob').value) || 20;
-                sandboxSettings.width = document.getElementById('sb-width').value; sandboxSettings.height = document.getElementById('sb-height').value;
+                sandboxSettings.time = Number(document.getElementById('sb-time').value) || 30; 
+                sandboxSettings.goodPts = Number(document.getElementById('sb-good-pts').value) || 1; 
+                sandboxSettings.badPts = Number(document.getElementById('sb-bad-pts').value) || 5;
+                sandboxSettings.bossHp = Number(document.getElementById('sb-boss-hp').value) || 3; 
+                sandboxSettings.bossPts = Number(document.getElementById('sb-boss-pts').value) || 10;
+                sandboxSettings.bossProb = Number(document.getElementById('sb-boss-prob').value) || 5; 
+                sandboxSettings.powProb = Number(document.getElementById('sb-pow-prob').value) || 5; 
+                sandboxSettings.badProb = Number(document.getElementById('sb-bad-prob').value) || 20;
+                sandboxSettings.width = document.getElementById('sb-width').value; 
+                sandboxSettings.height = document.getElementById('sb-height').value;
                 
-                state.activeMode = 'sandbox'; document.querySelectorAll('.mode-btn').forEach(x => x.classList.remove('active')); document.getElementById('btn-open-sandbox-settings').classList.add('active');
-                document.getElementById('sandbox-settings-modal').style.display='none'; applyModeSettings(); showToast("Sandbox ayarları kaydedildi!");
+                state.activeMode = 'sandbox'; 
+                document.querySelectorAll('.mode-btn').forEach(x => x.classList.remove('active')); 
+                document.getElementById('btn-open-sandbox-settings').classList.add('active');
+                
+                document.getElementById('sandbox-settings-modal').style.display='none'; 
+                applyModeSettings(); 
+                showToast("Sandbox ayarları kaydedildi!");
+
+                // Eğer lobideysek lobiye de anında uygula ve rakibe yolla
+                if(duelState.active === false && duelState.id && duelState.isHost) {
+                    updateLobbyState({ mode: 'sandbox', sandboxSettings: sandboxSettings });
+                    document.getElementById('dl-mode').value = 'sandbox';
+                    document.getElementById('dl-btn-sb-settings').style.display = 'block';
+                }
             };
 
             document.getElementById('shop-back-button').onclick=()=>showScreen('main-menu'); document.getElementById('quest-back-button').onclick=()=>showScreen('main-menu'); document.getElementById('score-back-button').onclick=()=>showScreen('main-menu'); document.getElementById('cloud-back-button').onclick=()=>showScreen('main-menu');
@@ -1552,9 +1603,8 @@
             document.querySelectorAll('.q-tab').forEach(b => b.onclick = (e) => { currentQuestView = e.target.getAttribute('data-qtab'); document.querySelectorAll('.q-tab').forEach(x => x.classList.remove('active')); e.target.classList.add('active'); renderQuests(); });
             document.querySelectorAll('.score-tab').forEach(b => b.onclick = (e) => { document.querySelectorAll('.score-tab').forEach(x => x.classList.remove('active')); e.target.classList.add('active'); renderScores(e.target.getAttribute('data-stab')); });
 
-            // Sandbox butonunu döngüden tamamen hariç tuttuk ve tıklama hedeflemesini kusursuzlaştırdık
             document.querySelectorAll('.mode-btn:not(#btn-open-sandbox-settings)').forEach(b => b.onclick = (e) => {
-                let targetBtn = e.currentTarget; // Emojiye de basılsa butonu hedef al
+                let targetBtn = e.currentTarget; 
                 if(!targetBtn.getAttribute('data-mode')) return;
                 
                 document.querySelectorAll('.mode-btn:not(#btn-open-sandbox-settings)').forEach(x => x.classList.remove('active')); 
