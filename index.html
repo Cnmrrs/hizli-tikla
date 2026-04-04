@@ -68,6 +68,7 @@
             transition: transform 0.1s; background: #34495e; position: relative; overflow: hidden;
         }
         button:active { transform: scale(0.95); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
         
         #play-button { background: linear-gradient(45deg, #2ecc71, #27ae60); font-size: 1.3em; padding: 15px; }
         #menu-shop-button { background: linear-gradient(45deg, #f1c40f, #f39c12); }
@@ -80,18 +81,33 @@
         .bottom-actions button { font-size: 0.8em; padding: 10px; }
         .btn-red { background: #e74c3c; margin-top: 10px; }
 
+        #btn-game-back {
+            position: absolute; top: 15px; left: 15px; width: 45px; height: 45px;
+            border-radius: 50%; background: rgba(255,255,255,0.9); display: flex;
+            justify-content: center; align-items: center; font-size: 1.2em;
+            cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border: none; z-index: 100;
+            color: #2c3e50; padding: 0;
+        }
+
         /* OYUN ALANI */
         #top-info {
-            width: 90%; display: flex; justify-content: space-between; background: white;
+            width: 90%; display: flex; flex-direction: column; background: white;
             padding: 10px 20px; border-radius: 15px; margin-bottom: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); box-sizing: border-box;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); box-sizing: border-box; gap: 5px;
         }
-        .stat-box { text-align: center; font-weight: bold; color: #34495e; }
+        .stats-main { display: flex; justify-content: space-between; width: 100%; align-items: center; }
+        .stat-box { text-align: center; font-weight: bold; color: #34495e; flex: 1;}
         .stat-val { display: block; font-size: 1.4em; color: #e74c3c; }
+        .stats-power { display: flex; justify-content: center; gap: 10px; border-top: 1px solid #eee; padding-top: 5px; color: #7f8c8d; font-size: 0.9em; font-weight: bold; }
 
-        #power-status { height: 30px; width: 90%; margin-bottom: 5px; text-align: center; font-weight: bold; font-size: 1.2em; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; color: white; }
+        /* MEYDAN OKUMA ÜST BİLGİ */
+        #duel-top-info { display: none; width: 100%; justify-content: space-between; align-items: center; font-size: 1.1em; font-weight: bold; }
+        .duel-player-stat { display: flex; flex-direction: column; align-items: center; padding: 5px 10px; border-radius: 10px; color: white; width: 30%; }
+        .duel-time { font-size: 1.5em; color: #2c3e50; }
 
-        #game-container { position: relative; width: 95vw; max-width: 550px; height: 60vh; max-height: 650px; background: rgba(255,255,255,0.95); border: 4px solid #34495e; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15); cursor: crosshair; z-index: 5; }
+        #power-status { height: 25px; width: 90%; margin-bottom: 5px; text-align: center; font-weight: bold; font-size: 1.2em; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; color: white; }
+
+        #game-container { position: relative; width: 95vw; max-width: 550px; height: 50vh; max-height: 550px; background: rgba(255,255,255,0.95); border: 4px solid #34495e; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.15); cursor: crosshair; z-index: 5; }
 
         .circle { position: absolute; border-radius: 50%; transform: scale(0); opacity: 0; transition: transform 0.1s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .circle.active { transform: scale(1); opacity: 1; }
@@ -104,6 +120,7 @@
         .skin-dark { background: radial-gradient(circle at 30% 30%, #636e72, #2d3436); border: 2px solid #fff; }
         .skin-gold { background: radial-gradient(circle at 30% 30%, #ffeaa7, #fdcb6e); border: 3px solid #e17055; }
         .skin-rainbow { background: linear-gradient(135deg, red, orange, yellow, green, blue, indigo, violet); border: 2px solid white; }
+        .skin-purple { background: radial-gradient(circle at 30% 30%, #a29bfe, #6c5ce7); }
 
         .bad { background: radial-gradient(circle at 30% 30%, #636e72, #2d3436); border: 3px solid #000; z-index: 5; }
         .boss { background: radial-gradient(circle at 30% 30%, #f1c40f, #e67e22); border: 4px solid #c0392b; z-index: 8; }
@@ -118,12 +135,21 @@
         @keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity:1; } 100% { transform: translateY(-50px) scale(1.5); opacity:0; } }
 
         #controls-area { width: 90%; max-width: 550px; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 20; }
-        .input-row { display: flex; gap: 10px; }
-        input, select { flex: 1; padding: 15px; border-radius: 12px; border: 1px solid #ccc; font-size: 1em; text-align: center; }
+        
+        /* HAZIRLIK ALANI SPLIT UI */
+        .prep-split { display: flex; gap: 10px; width: 100%; margin-bottom: 5px; }
+        .prep-box { flex: 1; background: rgba(255,255,255,0.95); border-radius: 12px; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid transparent; }
+        
+        .prep-quest { border-color: #f1c40f; }
+        .prep-quest .q-title { font-size: 0.7em; color: #7f8c8d; text-transform: uppercase; font-weight: bold; }
+        .prep-quest .q-desc { font-size: 0.85em; color: #2c3e50; font-weight: bold; margin: 3px 0; text-align: center; }
+        .prep-quest .q-prog { font-size: 0.75em; color: #e74c3c; font-weight: bold; }
+        
+        .prep-diff { border-color: #3498db; padding: 0; overflow: hidden; }
+        .prep-diff select { width: 100%; height: 100%; padding: 15px; border: none; background: transparent; font-size: 1em; font-weight: bold; color: #2c3e50; text-align: center; outline: none; appearance: none; cursor: pointer; }
 
         /* CLOUD UI & TOGGLES */
         .cloud-info { background: #f8f9fa; padding: 15px; border-radius: 10px; width: 100%; box-sizing: border-box; text-align: left; border: 2px solid #bdc3c7; margin-bottom: 10px; }
-        .cloud-status { color: #e67e22; font-weight: bold; }
         
         .toggle-row { display: flex; justify-content: space-between; align-items: center; background: #ecf0f1; padding: 12px 15px; border-radius: 10px; width: 100%; box-sizing: border-box; margin-bottom: 10px;}
         .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
@@ -158,17 +184,23 @@
         .tab-btn { flex: 1; background: #eee; color: #555; padding: 10px; border: none; border-radius: 8px; font-weight: bold; }
         .tab-btn.active { background: #3498db; color: white; }
 
-        #tutorial-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 200; backdrop-filter: blur(5px); }
-        #tutorial-content { background: white; padding: 30px; border-radius: 15px; max-width: 400px; text-align: center; }
-
-        /* TOAST & MODALS */
-        #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 1000; pointer-events: none; }
-        .toast { background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 30px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.3); animation: slideUp 0.3s ease-out forwards; }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* OVARLAYS & MODALS */
+        .overlay-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(5px); }
+        .overlay-content { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        #custom-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(5px); }
-        .modal-box { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .modal-box p { font-size: 1.1em; color: #2c3e50; font-weight: bold; margin-bottom: 20px; }
+        #tutorial-content { max-width: 400px; }
+        
+        /* TOAST & BİLDİRİMLER */
+        #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 4000; pointer-events: none; }
+        .toast { background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 30px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.3); animation: slideUp 0.3s ease-out forwards; }
+        
+        #invite-toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 4100; }
+        .invite-toast { background: #34495e; border: 2px solid #f1c40f; color: white; padding: 15px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); animation: slideDown 0.3s ease-out forwards; text-align: center; }
+        
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        #custom-modal .modal-box p { font-size: 1.1em; color: #2c3e50; font-weight: bold; margin-bottom: 20px; }
         .modal-buttons { display: flex; gap: 10px; }
 
         /* AUTH UI EKLEMELERİ */
@@ -177,10 +209,31 @@
         .auth-input:focus { border-color: #3498db; }
         .cloud-section { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         
+        /* HESAP EKLENTİLERİ */
+        .cloud-tabs { display: flex; gap: 5px; margin-bottom: 10px; width: 100%; }
+        .c-tab { flex: 1; padding: 8px; font-size: 0.8em; background: #eee; color: #555; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .c-tab.active { background: #1abc9c; color: white; }
+        .ctab-content { display: none; flex-direction: column; gap: 10px; width: 100%; }
+        .ctab-content.active { display: flex; }
+        
         /* KVKK EKLENTİSİ */
         .kvkk-container { display: flex; align-items: flex-start; gap: 8px; font-size: 0.75em; color: #7f8c8d; margin-bottom: 5px; text-align: left; }
         .kvkk-container input[type="checkbox"] { width: 16px; height: 16px; margin-top: 2px; cursor: pointer; accent-color: #3498db; flex-shrink: 0; }
         .kvkk-link { color: #3498db; text-decoration: underline; cursor: pointer; font-weight: bold; }
+
+        /* ARKADAŞ LİSTESİ ÖĞELERİ */
+        .friend-item { padding:10px; border-bottom:1px solid #ecf0f1; display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition: background 0.2s; border-radius: 8px; margin-bottom: 2px; background: white; border: 1px solid #eee;}
+        .friend-item:hover { background: #f1c40f; color: white; border-color: #f39c12; }
+        .friend-item:hover span { color: white !important; background: transparent !important; border: 1px solid white !important; }
+
+        /* MEYDAN OKUMA LOBİSİ */
+        .lobby-split { display: flex; gap: 15px; width: 100%; margin-bottom: 15px; }
+        .lobby-player { flex: 1; background: #f8f9fa; border: 2px solid #bdc3c7; border-radius: 15px; padding: 15px; text-align: center; position: relative; }
+        .lobby-player h4 { margin: 0 0 10px 0; color: #2c3e50; font-size: 1.1em; }
+        .color-picker { width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #ccc; font-weight: bold; outline: none; margin-bottom: 10px; }
+        .ready-status { font-size: 0.9em; font-weight: bold; color: #e74c3c; }
+        .ready-status.is-ready { color: #2ecc71; }
+        .host-crown { position: absolute; top: -10px; right: -10px; font-size: 1.5em; transform: rotate(15deg); }
     </style>
 </head>
 <body>
@@ -197,7 +250,7 @@
                 <div class="logo-circle logo-inner"></div>
             </div>
             <h1>Hızlı Tıkla!</h1>
-            <div style="font-size:0.8em; color:#7f8c8d; margin-top:-10px; margin-bottom:15px;"></div>
+            <div style="font-size:0.8em; color:#7f8c8d; margin-top:-10px; margin-bottom:15px;">Arkadaşlar Artık Aktif!</div>
             <button id="play-button">► OYUNA BAŞLA</button>
             <button id="menu-shop-button">🛍️ MAĞAZA</button>
             <button id="menu-quests-achievements-button">🏆 GÖREVLER</button>
@@ -247,23 +300,40 @@
                 </div>
             </div>
 
-            <!-- BULUT SENKRONİZASYON BÖLÜMÜ -->
+            <!-- DASHBOARD BÖLÜMÜ -->
             <div id="sync-section" class="cloud-section" style="display: none;">
-                <div class="cloud-info" style="padding: 10px; margin-bottom: 5px;">
-                    <div style="font-size: 0.8em; color: #7f8c8d; text-align: center;" id="cloud-uid-text">--</div>
+                <div class="cloud-tabs">
+                    <button class="c-tab active" data-ctab="ctab-sync">☁️ BULUT</button>
+                    <button class="c-tab" data-ctab="ctab-account">⚙️ HESAP</button>
                 </div>
-                <div class="toggle-row" style="padding: 8px 10px; margin-bottom: 5px;">
-                    <span style="font-weight:bold; font-size:0.9em; color:#34495e;">🔄 Oto-Kayıt</span>
-                    <label class="switch">
-                        <input type="checkbox" id="auto-save-toggle" checked>
-                        <span class="slider"></span>
-                    </label>
+
+                <!-- 1. BULUT SEKME -->
+                <div id="ctab-sync" class="ctab-content active">
+                    <div class="cloud-info" style="padding: 10px; margin-bottom: 5px;">
+                        <div style="font-size: 0.8em; color: #7f8c8d; text-align: center;" id="cloud-uid-text">--</div>
+                    </div>
+                    <div class="toggle-row" style="padding: 8px 10px; margin-bottom: 5px;">
+                        <span style="font-weight:bold; font-size:0.9em; color:#34495e;">🔄 Oto-Kayıt</span>
+                        <label class="switch">
+                            <input type="checkbox" id="auto-save-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div style="display: flex; gap: 5px;">
+                        <button id="cloud-save-btn" style="background: #2980b9; padding: 10px; font-size: 0.8em;">☁️ KAYDET</button>
+                        <button id="cloud-load-btn" style="background: #27ae60; padding: 10px; font-size: 0.8em;">📥 YÜKLE</button>
+                    </div>
                 </div>
-                <div style="display: flex; gap: 5px;">
-                    <button id="cloud-save-btn" style="background: #2980b9; padding: 10px; font-size: 0.8em;">☁️ KAYDET</button>
-                    <button id="cloud-load-btn" style="background: #27ae60; padding: 10px; font-size: 0.8em;">📥 YÜKLE</button>
+
+                <!-- 2. HESAP SEKME -->
+                <div id="ctab-account" class="ctab-content">
+                    <input type="text" id="prof-username" class="auth-input" placeholder="Kullanıcı Adı (NPM Adı)">
+                    <button id="btn-update-user" style="background:#f39c12; padding:10px; font-size:0.8em;">ADIMI GÜNCELLE</button>
+                    <hr style="width:100%; border:1px solid #eee; margin: 5px 0;">
+                    <input type="password" id="prof-pass" class="auth-input" placeholder="Yeni Şifre">
+                    <button id="btn-update-pass" style="background:#e67e22; padding:10px; font-size:0.8em;">ŞİFRE DEĞİŞTİR</button>
+                    <button class="btn-logout-action btn-red" style="padding: 10px; font-size: 0.8em; margin-top: 10px;">🚪 ÇIKIŞ YAP</button>
                 </div>
-                <button class="btn-logout-action btn-red" style="padding: 10px; font-size: 0.8em; margin-top: 5px;">🚪 ÇIKIŞ YAP</button>
             </div>
 
             <button class="btn-red" id="cloud-back-button" style="margin-top: 15px; background: #7f8c8d; padding: 10px;">GERİ DÖN</button>
@@ -272,10 +342,30 @@
 
     <!-- GAME AREA -->
     <div id="game-area" class="game-screen">
+        <button id="btn-game-back">⬅️</button>
+        
         <div id="top-info">
-            <div class="stat-box">PUAN <span class="stat-val" id="score">0</span></div>
-            <div class="stat-box">SÜRE <span class="stat-val" id="timer">30</span></div>
-            <div class="stat-box">PARA <span class="stat-val" id="coins">0</span></div>
+            <div class="stats-main" id="normal-top-info">
+                <div class="stat-box">PUAN <span class="stat-val" id="score">0</span></div>
+                <div class="stat-box">SÜRE <span class="stat-val" id="timer">30</span></div>
+                <div class="stat-box">PARA <span class="stat-val" id="coins">0</span></div>
+            </div>
+            
+            <div id="duel-top-info">
+                <div class="duel-player-stat" id="duel-p1-stat" style="background: #3498db;">
+                    <span id="duel-p1-name" style="font-size: 0.7em; text-transform: uppercase;">Sen</span>
+                    <span id="duel-p1-score" style="font-size: 1.5em;">0</span>
+                </div>
+                <div class="duel-time" id="duel-timer">30</div>
+                <div class="duel-player-stat" id="duel-p2-stat" style="background: #e74c3c;">
+                    <span id="duel-p2-name" style="font-size: 0.7em; text-transform: uppercase;">Arkadaş</span>
+                    <span id="duel-p2-score" style="font-size: 1.5em;">0</span>
+                </div>
+            </div>
+
+            <div class="stats-power" id="normal-power-info">
+                <span id="shield-status">🛡️ Kalkan: 0</span> | <span id="headstart-status">🚀 Boost: 0</span>
+            </div>
         </div>
         
         <div id="power-status"></div>
@@ -287,23 +377,28 @@
         </div>
 
         <div id="controls-area">
-            <div class="input-row">
-                <input type="text" id="player-name" placeholder="Adın" maxlength="12">
-                <select id="difficulty">
-                    <option value="easy">Kolay</option>
-                    <option value="medium" selected>Orta</option>
-                    <option value="hard">Zor</option>
-                </select>
+            <div class="prep-split" id="prep-panel">
+                <div class="prep-box prep-quest">
+                    <div class="q-title">Sıradaki Görev</div>
+                    <div class="q-desc" id="cq-desc">Görevler Aranıyor...</div>
+                    <div class="q-prog" id="cq-prog">-</div>
+                </div>
+                <div class="prep-box prep-diff">
+                    <select id="difficulty">
+                        <option value="easy">Kolay Mod</option>
+                        <option value="medium" selected>Orta Mod</option>
+                        <option value="hard">Zor Mod</option>
+                    </select>
+                </div>
             </div>
-            <button id="start-game-button" style="background: #2ecc71;">BAŞLAT</button>
-            <button id="initial-back-button" class="btn-red">ANA MENÜYE DÖN</button>
+
+            <div style="display:flex; gap:10px;" id="game-start-buttons">
+                <button id="btn-open-friends" style="background: #3498db; flex: 1;">👥 ARKADAŞLAR</button>
+                <button id="start-game-button" style="background: #2ecc71; flex: 2;">BAŞLAT</button>
+            </div>
 
             <div class="input-row" id="end-game-buttons" style="display: none;">
                 <button id="reset-button" style="background: #f39c12;">TEKRAR</button>
-                <button id="back-to-menu-button" style="background: #e74c3c;">ÇIKIŞ</button>
-            </div>
-            <div style="display:flex; gap:10px; justify-content:center; color:white; font-size:0.9em;">
-                <span id="shield-status">🛡️ Kalkan: 0</span> | <span id="headstart-status">🚀 Boost: 0</span>
             </div>
         </div>
     </div>
@@ -353,9 +448,10 @@
         </div>
     </div>
 
-    <div id="tutorial-overlay">
-        <div id="tutorial-content" class="menu-card">
-            <h2 style="color:#2c3e50">Nasıl Oynanır?</h2>
+    <!-- MODALS (OVERLAYS) -->
+    <div id="tutorial-overlay" class="overlay-screen">
+        <div id="tutorial-content" class="overlay-content">
+            <h2 style="color:#2c3e50; margin-top:0;">Nasıl Oynanır?</h2>
             <p>🔴 <b>Kırmızıları</b> patlat!</p>
             <p>⚫ <b>Siyahlara</b> dokunma!</p>
             <p>🟡 <b>Boss</b> 3 vuruş ister!</p>
@@ -364,10 +460,88 @@
         </div>
     </div>
 
-    <!-- TOASTS & MODALS -->
-    <div id="toast-container"></div>
-    <div id="custom-modal">
-        <div class="modal-box">
+    <!-- ARKADAŞ MODAL -->
+    <div id="friends-modal" class="overlay-screen">
+        <div class="overlay-content" style="padding: 20px;">
+            <h3 style="margin-top:0; color:#2c3e50;">👥 Arkadaşların</h3>
+            <div style="display:flex; gap:5px; margin-bottom:10px;">
+                <input type="text" id="friend-id-input" class="auth-input" placeholder="NPM Adı ile Ekle" style="margin:0; font-size:0.8em; padding: 10px;">
+                <button id="btn-add-friend" style="width:auto; padding:0 15px; background:#2ecc71;">EKLE</button>
+            </div>
+            <div id="friends-list" class="scroll-content" style="max-height: 200px; border-radius:10px; background:#f8f9fa; border:1px solid #eee; padding:5px; text-align:left; font-size:0.85em;">
+                <div style="color:#7f8c8d; text-align:center;">NPM ID ile giriş yapmalısın.</div>
+            </div>
+            <button id="close-friends-modal" class="btn-red" style="margin-top: 10px;">KAPAT</button>
+        </div>
+    </div>
+
+    <!-- ARKADAŞ PROFİL KARTI MODAL -->
+    <div id="friend-profile-modal" class="overlay-screen" style="z-index: 3100;">
+        <div class="overlay-content" style="padding: 30px; text-align: center;">
+            <div style="font-size: 4em; margin-bottom: 10px;">👤</div>
+            <h2 id="fp-name" style="margin: 0; color: #2c3e50;">Arkadaş Adı</h2>
+            <div style="color: #7f8c8d; font-size: 0.85em; margin-bottom: 20px;">NPM Games Oyuncusu</div>
+            <div style="background: #f8f9fa; border: 1px solid #eee; border-radius: 10px; padding: 10px; margin-bottom: 20px; font-size: 0.9em; color: #34495e;">
+                <b>Eklenme Tarihi:</b><br>
+                <span id="fp-date">--/--/----</span>
+            </div>
+            <button id="btn-challenge" style="background: #e74c3c; margin-bottom: 10px; font-size: 0.9em;">⚔️ MEYDAN OKU</button>
+            <button id="close-friend-profile" style="background: #7f8c8d; font-size: 0.9em;">GERİ DÖN</button>
+        </div>
+    </div>
+
+    <!-- DUEL LOBBY MODAL -->
+    <div id="duel-lobby-modal" class="overlay-screen" style="z-index: 3200;">
+        <div class="overlay-content" style="max-width: 500px;">
+            <h2 style="color:#2c3e50; margin-top:0;">⚔️ MEYDAN OKUMA</h2>
+            
+            <div class="lobby-split">
+                <!-- HOST (SEN) -->
+                <div class="lobby-player">
+                    <div class="host-crown" id="dl-host-crown" style="display:none;">👑</div>
+                    <h4 id="dl-p1-name">Sen</h4>
+                    <select class="color-picker" id="dl-p1-color">
+                        <option value="blue">Mavi</option>
+                        <option value="default" style="color:red;">Kırmızı</option>
+                        <option value="green" style="color:green;">Yeşil</option>
+                        <option value="purple" style="color:purple;">Mor</option>
+                    </select>
+                    <div class="ready-status" id="dl-p1-ready">Hazırlanıyor...</div>
+                </div>
+                <div style="display:flex; align-items:center; font-weight:bold; color:#7f8c8d;">VS</div>
+                <!-- GUEST (ARKADAŞ) -->
+                <div class="lobby-player">
+                    <h4 id="dl-p2-name">Arkadaş</h4>
+                    <select class="color-picker" id="dl-p2-color" disabled>
+                        <option value="default">Kırmızı</option>
+                        <option value="blue">Mavi</option>
+                        <option value="green">Yeşil</option>
+                        <option value="purple">Mor</option>
+                    </select>
+                    <div class="ready-status" id="dl-p2-ready">Bekleniyor...</div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="font-size:0.8em; font-weight:bold; color:#7f8c8d;">Zorluk Modu (Sadece Kurucu):</label>
+                <select id="dl-difficulty" class="color-picker" style="margin-top:5px;" disabled>
+                    <option value="easy">Kolay Mod</option>
+                    <option value="medium" selected>Orta Mod</option>
+                    <option value="hard">Zor Mod</option>
+                </select>
+            </div>
+
+            <div style="display:flex; gap:10px;">
+                <button id="dl-btn-ready" style="background: #2ecc71; flex: 2;">HAZIRIM</button>
+                <button id="dl-btn-start" style="background: #e67e22; flex: 2; display: none;">BAŞLAT ⚔️</button>
+                <button id="dl-btn-leave" style="background: #e74c3c; flex: 1;">ÇIK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- KVKK & GENEL MODALS -->
+    <div id="custom-modal" class="overlay-screen">
+        <div class="overlay-content">
             <p id="modal-text">Emin misin?</p>
             <div class="modal-buttons">
                 <button id="modal-yes" style="background: #2ecc71;">EVET</button>
@@ -379,9 +553,8 @@
         </div>
     </div>
 
-    <!-- KVKK MODAL -->
-    <div id="kvkk-modal" class="game-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
-        <div class="modal-box" style="max-width: 400px; text-align: left;">
+    <div id="kvkk-modal" class="overlay-screen" style="z-index: 3000;">
+        <div class="overlay-content" style="max-width: 400px; text-align: left;">
             <h3 style="color: #2c3e50; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px;">Aydınlatma Metni</h3>
             <p style="font-size: 0.95em; color: #34495e; line-height: 1.5; font-weight: normal;">
                 Verileriniz hiçbir yerde kullanılmamaktadır, başka biriyle veya kurumla paylaşılmamaktadır. Oyun içi kayıt verileriniz güvenli bir şekilde yalnızca <b>Google Firebase</b> sunucularında tutulmaktadır.
@@ -389,12 +562,15 @@
             <button id="close-kvkk" style="background: #3498db; margin-top: 15px;">ANLADIM</button>
         </div>
     </div>
+    
+    <div id="invite-toast-container"></div>
+    <div id="toast-container"></div>
 
     <!-- FIREBASE & GAME LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut, updateProfile, updatePassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // CANVAS FIREBASE CONFIG
         const firebaseConfig = {
@@ -413,6 +589,16 @@
         // GLOABAL STATE
         let currentUser = null;
         let cloudDebounceTimeout;
+        let unsubscribeFriends = null;
+        let unsubscribeInvites = null;
+        let unsubscribeDuel = null;
+        let currentFriendProfileId = null;
+
+        // DUEL STATE
+        let duelState = {
+            active: false, id: null, isHost: false, myColor: 'blue', friendColor: 'default',
+            myScore: 0, friendScore: 0, lost: false, role: null
+        };
 
         const AudioSys = {
             ctx:null, enabled:true,
@@ -472,7 +658,11 @@
         };
 
         // --- UTILS ---
-        function showScreen(id) { els.screens.forEach(s=>s.style.display='none'); document.getElementById(id).style.display='flex'; }
+        function showScreen(id) { 
+            els.screens.forEach(s=>s.style.display='none'); 
+            document.getElementById(id).style.display='flex'; 
+            if(id === 'game-area' && !duelState.active) { updateClosestQuest(); }
+        }
         
         function showToast(msg, duration = 2500) {
             const container = document.getElementById('toast-container');
@@ -504,19 +694,7 @@
             document.getElementById('modal-no').onclick = () => { modal.style.display = 'none'; callback(null); };
         }
 
-        function getAuthErrorMsg(code) {
-            switch(code) {
-                case 'auth/email-already-in-use': return 'Bu e-posta zaten kullanımda.';
-                case 'auth/invalid-email': return 'Geçersiz e-posta adresi.';
-                case 'auth/weak-password': return 'Şifre çok zayıf (En az 6 karakter).';
-                case 'auth/user-not-found': return 'Kullanıcı bulunamadı.';
-                case 'auth/wrong-password': return 'Hatalı şifre.';
-                case 'auth/invalid-credential': return 'Giriş bilgileri hatalı.';
-                case 'auth/missing-password': return 'Lütfen şifre girin.';
-                default: return 'Bir hata oluştu.';
-            }
-        }
-
+        // --- FIREBASE AUTH & UI ---
         function updateCloudUI() {
             const authSec = document.getElementById('auth-section');
             const verifySec = document.getElementById('verify-section');
@@ -526,267 +704,434 @@
             if (currentUser && !currentUser.isAnonymous) {
                 if (currentUser.emailVerified) {
                     authSec.style.display = 'none'; verifySec.style.display = 'none'; syncSec.style.display = 'flex';
-                    document.getElementById('cloud-uid-text').textContent = currentUser.email;
-                    miniText.textContent = `NPM ID: ${currentUser.email}`;
+                    const dName = currentUser.displayName || "İsimsiz Oyuncu";
+                    document.getElementById('cloud-uid-text').textContent = `${dName} (${currentUser.email})`;
+                    miniText.textContent = `NPM ID: ${dName}`;
+                    document.getElementById('prof-username').value = currentUser.displayName || "";
+                    
+                    if(!unsubscribeFriends) listenFriends(); 
+                    if(!unsubscribeInvites) listenInvites();
                 } else {
                     authSec.style.display = 'none'; verifySec.style.display = 'flex'; syncSec.style.display = 'none';
                     document.getElementById('verify-email-text').textContent = currentUser.email;
                     miniText.textContent = `NPM ID: ONAY BEKLİYOR`;
+                    if(unsubscribeFriends) { unsubscribeFriends(); unsubscribeFriends = null; }
+                    if(unsubscribeInvites) { unsubscribeInvites(); unsubscribeInvites = null; }
                 }
             } else {
                 authSec.style.display = 'flex'; verifySec.style.display = 'none'; syncSec.style.display = 'none';
                 miniText.textContent = `NPM ID: MİSAFİR`;
+                if(unsubscribeFriends) { unsubscribeFriends(); unsubscribeFriends = null; }
+                if(unsubscribeInvites) { unsubscribeInvites(); unsubscribeInvites = null; }
             }
         }
 
-        // --- FIREBASE INIT ---
-        async function initCloudAuth() {
-            try {
-                if (!auth.currentUser) {
-                    await signInAnonymously(auth);
-                }
-            } catch(e) {
-                console.error("Auth Error:", e);
-                showToast("NPM ID Bağlantı Hatası", 3000);
+        function updateClosestQuest() {
+            let closest = null; let maxProgress = -1;
+            ['daily', 'weekly'].forEach(cat => {
+                quests[cat].forEach(q => {
+                    if(!q.done) {
+                        let prog = q.curr / q.target;
+                        if(prog > maxProgress) { maxProgress = prog; closest = q; }
+                    }
+                });
+            });
+            const descEl = document.getElementById('cq-desc'); const progEl = document.getElementById('cq-prog');
+            if(closest) {
+                descEl.textContent = closest.desc; progEl.textContent = `${closest.curr} / ${closest.target}`; progEl.style.color = '#e74c3c';
+            } else {
+                descEl.textContent = "Hepsi Tamam!"; progEl.textContent = "✅"; progEl.style.color = '#2ecc71';
             }
+        }
+
+        async function initCloudAuth() {
+            try { if (!auth.currentUser) await signInAnonymously(auth); } 
+            catch(e) { console.error("Auth Error:", e); showToast("NPM ID Bağlantı Hatası", 3000); }
         }
 
         onAuthStateChanged(auth, user => {
             currentUser = user;
             if(user) {
                 updateCloudUI();
-                // Hesaba ilk girişte otomatik yükle (Eğer onaylıysa)
                 if(!localStorage.getItem('cloud_loaded_once') && !user.isAnonymous && user.emailVerified) {
-                    loadFromCloud(false); 
-                    localStorage.setItem('cloud_loaded_once', 'true');
+                    loadFromCloud(false); localStorage.setItem('cloud_loaded_once', 'true');
                 }
-            } else {
-                // Çıkış yapıldıysa misafir olarak geri dön
-                signInAnonymously(auth);
-            }
+            } else { signInAnonymously(auth); }
         });
 
-        // --- AUTH ACTIONS ---
         document.getElementById('btn-register').onclick = async () => {
             const email = document.getElementById('auth-email').value;
             const pass = document.getElementById('auth-pass').value;
             const kvkk = document.getElementById('kvkk-check').checked;
-
             if(!email || !pass) return showToast("E-posta ve şifre boş bırakılamaz!");
             if(!kvkk) return showToast("Kayıt olmak için Aydınlatma Metni'ni kabul etmelisiniz!", 3500);
-
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, pass);
                 await sendEmailVerification(cred.user);
                 showToast("Kayıt başarılı! Lütfen e-postanızı onaylayın.", 4000);
-            } catch(e) { showToast(getAuthErrorMsg(e.code)); }
+            } catch(e) { showToast("Kayıt Hatası"); }
         };
 
         document.getElementById('btn-login').onclick = async () => {
             const email = document.getElementById('auth-email').value;
             const pass = document.getElementById('auth-pass').value;
             if(!email || !pass) return showToast("E-posta ve şifre boş bırakılamaz!");
-            try {
-                await signInWithEmailAndPassword(auth, email, pass);
-                showToast("Giriş başarılı!");
-            } catch(e) { showToast(getAuthErrorMsg(e.code)); }
-        };
-
-        document.getElementById('btn-resend-verify').onclick = async () => {
-            if(currentUser) {
-                try {
-                    await sendEmailVerification(currentUser);
-                    showToast("Onay e-postası tekrar gönderildi.");
-                } catch(e) { showToast("Bir süre bekleyip tekrar deneyin."); }
-            }
+            try { await signInWithEmailAndPassword(auth, email, pass); showToast("Giriş başarılı!"); } 
+            catch(e) { showToast("Hatalı giriş."); }
         };
 
         document.getElementById('btn-check-verify').onclick = async () => {
             if(currentUser) {
-                await currentUser.reload();
-                updateCloudUI();
-                if(auth.currentUser.emailVerified) showToast("Hesap onaylandı! Senkronizasyon açık.");
-                else showToast("Henüz onaylanmamış. Lütfen e-postanızı kontrol edin.", 3000);
+                await currentUser.reload(); updateCloudUI();
+                if(auth.currentUser.emailVerified) {
+                    showToast("Hesap onaylandı! Senkronizasyon açık.");
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', auth.currentUser.uid), { displayName: 'Yeni Oyuncu', uid: auth.currentUser.uid });
+                } else showToast("Henüz onaylanmamış.", 3000);
             }
         };
 
         document.querySelectorAll('.btn-logout-action').forEach(btn => {
-            btn.onclick = async () => {
-                await signOut(auth);
-                document.getElementById('auth-email').value = '';
-                document.getElementById('auth-pass').value = '';
-                showToast("Çıkış yapıldı.");
-            };
+            btn.onclick = async () => { await signOut(auth); showToast("Çıkış yapıldı."); };
         });
 
-        // --- DATA SYNC ---
-        async function saveToCloud(silent = false) {
+        document.getElementById('btn-update-user').onclick = async () => {
+            const newName = document.getElementById('prof-username').value.trim();
+            if(!newName || newName.length < 3) return showToast("Ad en az 3 karakter olmalı!");
             if(!currentUser) return;
-            const payload = {
-                coins: state.coins,
-                inventory: SHOP_ITEMS,
-                equipped: state.equipped,
-                quests: quests,
-                timestamp: new Date().toISOString()
-            };
             try {
-                // Kural 1 İhlali olmaması için format: artifacts/{appId}/users/{userId}/{collectionName}/{docId}
-                // Ama collection Name'in data olmasını zorunlu tutmadığı sürece bu ok.
-                const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'gamedata', 'hizlitikla');
-                await setDoc(docRef, payload);
-                if(!silent) showToast('☁️ Buluta Kaydedildi!');
-            } catch(e) {
-                console.error(e);
-                if(!silent) showToast('❌ Kayıt Başarısız!');
-            }
+                await updateProfile(currentUser, { displayName: newName });
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid), { displayName: newName, uid: currentUser.uid }, { merge: true });
+                showToast("Adınız güncellendi!"); updateCloudUI();
+            } catch(e) { showToast("Güncelleme başarısız."); }
+        };
+
+        // --- ARKADAŞ SISTEMI ---
+        document.getElementById('btn-add-friend').onclick = async () => {
+            const friendName = document.getElementById('friend-id-input').value.trim();
+            if(!friendName) return showToast("NPM Adı giriniz!");
+            if(currentUser && currentUser.displayName && friendName.toLowerCase() === currentUser.displayName.toLowerCase()) return showToast("Kendinizi ekleyemezsiniz!");
+            try {
+                const usersRef = collection(db, 'artifacts', appId, 'public', 'data', 'users');
+                const snap = await getDocs(usersRef);
+                let foundFriend = null;
+                snap.forEach(doc => { const data = doc.data(); if(data.displayName && data.displayName.toLowerCase() === friendName.toLowerCase()) foundFriend = data; });
+
+                if(foundFriend) {
+                    await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'friends', foundFriend.uid), { displayName: foundFriend.displayName, addedAt: new Date().toISOString() });
+                    showToast(`${foundFriend.displayName} eklendi!`); document.getElementById('friend-id-input').value = '';
+                } else { showToast("Bu NPM Adı bulunamadı."); }
+            } catch(e) { showToast("Hata oluştu."); }
+        };
+
+        function showFriendProfile(id, name, dateIso) {
+            currentFriendProfileId = id;
+            document.getElementById('fp-name').textContent = name;
+            const d = new Date(dateIso); document.getElementById('fp-date').textContent = d.toLocaleDateString('tr-TR');
+            document.getElementById('friend-profile-modal').style.display = 'flex';
         }
 
-        async function loadFromCloud(showMsg = true) {
-            if(!currentUser) { showToast("NPM Bulut Hesabına bağlı değilsiniz."); return; }
+        function listenFriends() {
+            if(!currentUser) return;
+            const friendsRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'friends');
+            unsubscribeFriends = onSnapshot(friendsRef, (snapshot) => {
+                const list = document.getElementById('friends-list'); list.innerHTML = '';
+                if(snapshot.empty) { list.innerHTML = '<div style="color:#7f8c8d; text-align:center; padding: 10px;">Henüz arkadaşın yok.</div>'; return; }
+                snapshot.forEach(doc => {
+                    const data = doc.data(); const div = document.createElement('div'); div.className = 'friend-item';
+                    div.innerHTML = `<b>${data.displayName}</b> <span style="font-size:0.8em; color:#bdc3c7; background:#f8f9fa; padding:3px 8px; border-radius:10px; border:1px solid #eee;">Arkadaş</span>`;
+                    div.onclick = () => { document.getElementById('friends-modal').style.display='none'; showFriendProfile(doc.id, data.displayName, data.addedAt); };
+                    list.appendChild(div);
+                });
+            });
+        }
+
+        // --- DUEL (MEYDAN OKUMA) SISTEMI ---
+        document.getElementById('btn-challenge').onclick = async () => {
+            if(!currentUser || !currentFriendProfileId) return;
+            document.getElementById('friend-profile-modal').style.display = 'none';
+            const dName = currentUser.displayName || "İsimsiz";
+            const duelId = currentUser.uid + '_' + Date.now();
+            
             try {
-                const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'gamedata', 'hizlitikla');
-                const docSnap = await getDoc(docRef);
+                // Public lobi oluştur
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'duels', duelId), {
+                    status: 'lobby', difficulty: 'medium', hostId: currentUser.uid,
+                    host: { name: dName, color: 'blue', ready: false, score: 0, lost: false },
+                    guest: { id: currentFriendProfileId, name: document.getElementById('fp-name').textContent, color: 'default', ready: false, score: 0, lost: false }
+                });
+                // Daveti yolla
+                await setDoc(doc(db, 'artifacts', appId, 'users', currentFriendProfileId, 'invites', duelId), { hostName: dName, timestamp: new Date().getTime() });
                 
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    state.coins = data.coins || 0;
-                    if(data.inventory) SHOP_ITEMS = data.inventory;
-                    if(data.equipped) state.equipped = data.equipped;
-                    if(data.quests) quests = data.quests;
-                    
-                    saveToLocal(); // Yereli güncelle
-                    updateUI();
-                    applyBackground();
-                    if(showMsg) showToast('📥 Veriler Buluttan Yüklendi!');
+                showToast("Davet Gönderildi! Lobiye Geçiliyor...");
+                openDuelLobby(duelId, true);
+            } catch(e) { console.error(e); showToast("Davet yollanamadı!"); }
+        };
+
+        function listenInvites() {
+            if(!currentUser) return;
+            const invitesRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'invites');
+            unsubscribeInvites = onSnapshot(invitesRef, (snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "added") {
+                        const data = change.doc.data();
+                        // 1 dakika geçmişse iptal et
+                        if(new Date().getTime() - data.timestamp > 60000) { deleteDoc(change.doc.ref); return; }
+                        showInviteToast(change.doc.id, data.hostName);
+                    }
+                });
+            });
+        }
+
+        function showInviteToast(duelId, hostName) {
+            const container = document.getElementById('invite-toast-container');
+            const div = document.createElement('div'); div.className = 'invite-toast';
+            div.innerHTML = `
+                <div style="font-size:1.1em; margin-bottom:10px;">⚔️ <b>${hostName}</b> sana meydan okuyor!</div>
+                <div style="display:flex; gap:10px; justify-content:center;">
+                    <button class="btn-accept" style="background:#2ecc71; padding:8px 15px; border-radius:10px; border:none; color:white; font-weight:bold; cursor:pointer;">KABUL ET</button>
+                    <button class="btn-decline" style="background:#e74c3c; padding:8px 15px; border-radius:10px; border:none; color:white; font-weight:bold; cursor:pointer;">REDDET</button>
+                </div>
+            `;
+            const delInvite = () => deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'invites', duelId)).catch(e=>console.error(e));
+            
+            div.querySelector('.btn-accept').onclick = () => { div.remove(); delInvite(); openDuelLobby(duelId, false); };
+            div.querySelector('.btn-decline').onclick = () => { div.remove(); delInvite(); };
+            container.appendChild(div);
+            setTimeout(() => { if(div.parentNode) { div.remove(); delInvite(); } }, 15000);
+        }
+
+        function openDuelLobby(duelId, isHost) {
+            duelState.active = false; duelState.id = duelId; duelState.isHost = isHost; duelState.role = isHost ? 'host' : 'guest';
+            document.getElementById('duel-lobby-modal').style.display = 'flex';
+            
+            const dlDiff = document.getElementById('dl-difficulty');
+            const dlColor1 = document.getElementById('dl-p1-color');
+            const dlColor2 = document.getElementById('dl-p2-color');
+            const btnReady = document.getElementById('dl-btn-ready');
+            
+            if(isHost) { dlDiff.disabled = false; document.getElementById('dl-host-crown').style.display = 'block'; } 
+            else { dlDiff.disabled = true; document.getElementById('dl-host-crown').style.display = 'none'; }
+            
+            btnReady.textContent = "HAZIRIM"; btnReady.style.background = "#2ecc71";
+            document.getElementById('dl-btn-start').style.display = 'none';
+
+            dlColor1.onchange = () => updateLobbyState({ [`${duelState.role}.color`]: dlColor1.value });
+            dlDiff.onchange = () => { if(isHost) updateLobbyState({ difficulty: dlDiff.value }); };
+
+            if(unsubscribeDuel) unsubscribeDuel();
+            unsubscribeDuel = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'duels', duelId), (docSnap) => {
+                if(!docSnap.exists()) { closeLobby(); showToast("Meydan okuma iptal edildi."); return; }
+                const data = docSnap.data();
+                
+                if(data.status === 'playing') { startDuelGame(data); return; }
+
+                const me = isHost ? data.host : data.guest;
+                const them = isHost ? data.guest : data.host;
+                
+                document.getElementById('dl-p1-name').textContent = me.name;
+                dlColor1.value = me.color;
+                document.getElementById('dl-p1-ready').textContent = me.ready ? 'HAZIR' : 'Hazırlanıyor...';
+                document.getElementById('dl-p1-ready').className = me.ready ? 'ready-status is-ready' : 'ready-status';
+                
+                document.getElementById('dl-p2-name').textContent = them.name;
+                dlColor2.value = them.color;
+                document.getElementById('dl-p2-ready').textContent = them.ready ? 'HAZIR' : 'Bekleniyor...';
+                document.getElementById('dl-p2-ready').className = them.ready ? 'ready-status is-ready' : 'ready-status';
+                
+                if(!isHost) dlDiff.value = data.difficulty;
+
+                if(isHost && data.host.ready && data.guest.ready) {
+                    btnReady.style.display = 'none'; document.getElementById('dl-btn-start').style.display = 'block';
                 } else {
-                    if(showMsg) showToast('☁️ Bulutta veri bulunamadı.');
+                    btnReady.style.display = 'block'; document.getElementById('dl-btn-start').style.display = 'none';
                 }
-            } catch(e) {
-                console.error(e);
-                if(showMsg) showToast('❌ Yükleme Başarısız!');
-            }
+            });
         }
 
-        function triggerAutoSave() {
-            if(!state.autoSave || !currentUser) return;
-            clearTimeout(cloudDebounceTimeout);
-            cloudDebounceTimeout = setTimeout(() => { saveToCloud(true); }, 2000);
+        async function updateLobbyState(updates) {
+            if(!duelState.id) return;
+            try { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'duels', duelState.id), updates); } catch(e){}
         }
 
+        document.getElementById('dl-btn-ready').onclick = () => {
+            const isReady = document.getElementById('dl-p1-ready').textContent !== 'HAZIR';
+            updateLobbyState({ [`${duelState.role}.ready`]: isReady });
+            document.getElementById('dl-btn-ready').textContent = isReady ? "İPTAL" : "HAZIRIM";
+            document.getElementById('dl-btn-ready').style.background = isReady ? "#e74c3c" : "#2ecc71";
+        };
+
+        document.getElementById('dl-btn-start').onclick = () => { updateLobbyState({ status: 'playing' }); };
+
+        document.getElementById('dl-btn-leave').onclick = () => { closeLobby(); };
+
+        function closeLobby() {
+            document.getElementById('duel-lobby-modal').style.display = 'none';
+            if(unsubscribeDuel) { unsubscribeDuel(); unsubscribeDuel = null; }
+            if(duelState.isHost && duelState.id) deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'duels', duelState.id));
+            duelState.id = null;
+        }
+
+        function startDuelGame(data) {
+            document.getElementById('duel-lobby-modal').style.display = 'none';
+            showScreen('game-area');
+            
+            duelState.active = true;
+            duelState.myScore = 0; duelState.friendScore = 0; duelState.lost = false;
+            duelState.myColor = duelState.isHost ? data.host.color : data.guest.color;
+            duelState.friendColor = duelState.isHost ? data.guest.color : data.host.color;
+            
+            document.getElementById('difficulty').value = data.difficulty;
+            
+            // UI Geçişi
+            document.getElementById('normal-top-info').style.display = 'none';
+            document.getElementById('normal-power-info').style.display = 'none';
+            document.getElementById('prep-panel').style.display = 'none';
+            document.getElementById('game-start-buttons').style.display = 'none';
+            document.getElementById('btn-game-back').style.display = 'none';
+            document.getElementById('duel-top-info').style.display = 'flex';
+            
+            document.getElementById('duel-p1-name').textContent = "Sen";
+            document.getElementById('duel-p2-name').textContent = duelState.isHost ? data.guest.name : data.host.name;
+            document.getElementById('duel-p1-score').textContent = "0"; document.getElementById('duel-p2-score').textContent = "0";
+            
+            // Başlat
+            state.active = true; state.score = 0;
+            state.time = (data.difficulty==='easy'?45:(data.difficulty==='hard'?20:30));
+            activeCircles.forEach(c=>c.remove()); activeCircles=[];
+            document.getElementById('duel-timer').textContent = state.time;
+            
+            scheduleNextSpawn();
+            timerInterval = setInterval(()=>{
+                state.time--; document.getElementById('duel-timer').textContent = state.time;
+                if(state.time<=0) endDuelLocally();
+            },1000);
+        }
+
+        function syncDuelStatus(scoreAdd = 0, lost = false) {
+            if(!duelState.active || !duelState.id) return;
+            duelState.myScore += scoreAdd;
+            const updates = { [`${duelState.role}.score`]: duelState.myScore };
+            if(lost) updates[`${duelState.role}.lost`] = true;
+            updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'duels', duelState.id), updates).catch(e=>{});
+        }
+
+        // Oyun sırasında diğer oyuncunun verisini dinleme
+        function setupDuelLiveListener() {
+           // Zaten unsubscribeDuel üzerinden dinliyoruz lobi açıldığında. Sadece içeriği yönlendirelim:
+        }
+        // Aslında lobi dinleyicisi `unsubscribeDuel` hala çalışıyor ve değişiklikleri alıyor. Onu güncelleyelim:
+        const originalDuelListener = unsubscribeDuel; 
+        // Lobi içinde yazdığımız `onSnapshot` playing state'inde puanları güncelleyecek kodu barındırmıyordu, 
+        // Bu yüzden `startGame` fonksiyonunda yeni bir listener kurmamız daha temiz:
+        function injectDuelListener() {
+            if(unsubscribeDuel) unsubscribeDuel();
+            unsubscribeDuel = onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'duels', duelState.id), (docSnap) => {
+                if(!docSnap.exists() || !duelState.active) return;
+                const data = docSnap.data();
+                const them = duelState.isHost ? data.guest : data.host;
+                
+                document.getElementById('duel-p2-score').textContent = them.score;
+                duelState.friendScore = them.score;
+                
+                if(them.lost) {
+                    showToast("Arkadaşın hata yaptı! KAZANDIN!", 4000);
+                    endDuelLocally(true); // Ben kazandım
+                }
+            });
+        }
+        
+        // `startDuelGame` içine şunu eklemeliyiz:
+        const _startDuelGame = startDuelGame;
+        startDuelGame = function(data) { _startDuelGame(data); injectDuelListener(); };
+
+
+        // --- DATA SYNC (BULUT) ---
+        async function saveToCloud(silent = false) {
+            if(!currentUser || currentUser.isAnonymous) return;
+            try { await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'gamedata', 'hizlitikla'), { coins: state.coins, inventory: SHOP_ITEMS, equipped: state.equipped, quests: quests, timestamp: new Date().toISOString() }); if(!silent) showToast('☁️ Buluta Kaydedildi!'); } catch(e) { if(!silent) showToast('❌ Kayıt Başarısız!'); }
+        }
+        async function loadFromCloud(showMsg = true) {
+            if(!currentUser || currentUser.isAnonymous) { showToast("Bağlı değilsiniz."); return; }
+            try {
+                const docSnap = await getDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'gamedata', 'hizlitikla'));
+                if (docSnap.exists()) {
+                    const data = docSnap.data(); state.coins = data.coins || 0;
+                    if(data.inventory) SHOP_ITEMS = data.inventory; if(data.equipped) state.equipped = data.equipped; if(data.quests) quests = data.quests;
+                    saveToLocal(); updateUI(); applyBackground(); if(showMsg) showToast('📥 Veriler Yüklendi!');
+                } else if(showMsg) showToast('☁️ Veri bulunamadı.');
+            } catch(e) { if(showMsg) showToast('❌ Yükleme Başarısız!'); }
+        }
         function saveToLocal() {
-            localStorage.setItem('coins', state.coins);
-            localStorage.setItem('shopInventory', JSON.stringify(SHOP_ITEMS));
-            localStorage.setItem('equipped', JSON.stringify(state.equipped));
-            localStorage.setItem('dailyQ', JSON.stringify(quests.daily));
-            localStorage.setItem('weeklyQ', JSON.stringify(quests.weekly));
+            localStorage.setItem('coins', state.coins); localStorage.setItem('shopInventory', JSON.stringify(SHOP_ITEMS)); localStorage.setItem('equipped', JSON.stringify(state.equipped));
+            localStorage.setItem('dailyQ', JSON.stringify(quests.daily)); localStorage.setItem('weeklyQ', JSON.stringify(quests.weekly));
             localStorage.setItem('autoSave', state.autoSave);
-            triggerAutoSave();
+            if(state.autoSave && currentUser) { clearTimeout(cloudDebounceTimeout); cloudDebounceTimeout = setTimeout(() => { saveToCloud(true); }, 2000); }
+            updateClosestQuest();
         }
 
-        // --- GAME LOGIC ---
+        // --- OYUN ÇEKİRDEĞİ (TEK OYUNCULU + DUEL) ---
         function init(){
-            state.autoSave = localStorage.getItem('autoSave') !== 'false'; // default true
+            state.autoSave = localStorage.getItem('autoSave') !== 'false';
             document.getElementById('auto-save-toggle').checked = state.autoSave;
-
             try {
                 state.coins = parseInt(localStorage.getItem('coins')) || 0;
                 const savedShop = JSON.parse(localStorage.getItem('shopInventory'));
-                if(savedShop) {
-                    ['cosmetic','upgrade','consumable'].forEach(cat => {
-                        if(SHOP_ITEMS[cat]) {
-                            SHOP_ITEMS[cat].forEach(item => {
-                                const savedItem = savedShop[cat]?.find(x => x.id === item.id);
-                                if(savedItem) {
-                                    if(item.type === 'consumable') item.count = savedItem.count;
-                                    else item.owned = savedItem.owned;
-                                }
-                            });
-                        }
-                    });
-                }
-                const savedEquip = JSON.parse(localStorage.getItem('equipped'));
-                if(savedEquip) state.equipped = savedEquip;
-                
-                const d = new Date().toDateString();
-                const w = Math.floor(Date.now() / 604800000);
-                if(localStorage.getItem('qDate') !== d) {
-                    quests.daily = generateRandomQuests(3,1);
-                    localStorage.setItem('dailyQ', JSON.stringify(quests.daily));
-                    localStorage.setItem('qDate', d);
-                } else quests.daily = JSON.parse(localStorage.getItem('dailyQ')) || [];
-
-                if(localStorage.getItem('qWeek') != w) {
-                    quests.weekly = generateRandomQuests(5,5);
-                    localStorage.setItem('weeklyQ', JSON.stringify(quests.weekly));
-                    localStorage.setItem('qWeek', w);
-                } else quests.weekly = JSON.parse(localStorage.getItem('weeklyQ')) || [];
-
-            } catch(e) { console.error("Local Load Err", e); }
-
-            applyBackground();
-            updateUI(); setupEvents();
-            initCloudAuth();
-            document.body.addEventListener('click',()=>AudioSys.init(),{once:true});
+                if(savedShop) ['cosmetic','upgrade','consumable'].forEach(cat => { if(SHOP_ITEMS[cat]) SHOP_ITEMS[cat].forEach(item => { const sItem = savedShop[cat]?.find(x => x.id === item.id); if(sItem) { if(item.type === 'consumable') item.count = sItem.count; else item.owned = sItem.owned; } }); });
+                const savedEquip = JSON.parse(localStorage.getItem('equipped')); if(savedEquip) state.equipped = savedEquip;
+                const d = new Date().toDateString(); const w = Math.floor(Date.now() / 604800000);
+                if(localStorage.getItem('qDate') !== d) { quests.daily = generateRandomQuests(3,1); localStorage.setItem('dailyQ', JSON.stringify(quests.daily)); localStorage.setItem('qDate', d); } else quests.daily = JSON.parse(localStorage.getItem('dailyQ')) || [];
+                if(localStorage.getItem('qWeek') != w) { quests.weekly = generateRandomQuests(5,5); localStorage.setItem('weeklyQ', JSON.stringify(quests.weekly)); localStorage.setItem('qWeek', w); } else quests.weekly = JSON.parse(localStorage.getItem('weeklyQ')) || [];
+            } catch(e) {}
+            applyBackground(); updateUI(); setupEvents(); initCloudAuth(); document.body.addEventListener('click',()=>AudioSys.init(),{once:true}); updateClosestQuest();
         }
 
         function generateRandomQuests(count, mult) {
             const tpls = [ {txt:"X Kere Tıkla", t:"clicks", min:30, max:80}, {txt:"X Boss Yen", t:"boss", min:2, max:6}, {txt:"X Puan Yap", t:"points", min:300, max:800}, {txt:"X Kez Yan", t:"fails", min:3, max:10}, {txt:"X Para Biriktir", t:"coins_earned", min:50, max:150} ];
             let res = [];
             for(let i=0;i<count;i++){
-                let t = tpls[Math.floor(Math.random()*tpls.length)];
-                let val = Math.floor((Math.random()*(t.max-t.min)+t.min)*mult);
+                let t = tpls[Math.floor(Math.random()*tpls.length)]; let val = Math.floor((Math.random()*(t.max-t.min)+t.min)*mult);
                 res.push({desc:t.txt.replace('X',val), target:val, curr:0, reward:Math.floor(val*(mult==1?1.5:0.8)), done:false, collected:false, type:t.t});
-            }
-            return res;
+            } return res;
         }
 
         function updateUI(){
             els.coin.textContent=state.coins; els.shopCoins.textContent=state.coins;
-            const shield = SHOP_ITEMS.consumable.find(x=>x.id==='con_shield');
-            const head = SHOP_ITEMS.consumable.find(x=>x.id==='con_head');
-            if(shield) document.getElementById('shield-status').textContent = `🛡️ Kalkan: ${shield.count}`;
-            if(head) document.getElementById('headstart-status').textContent = `🚀 Boost: ${head.count}`;
+            const shield = SHOP_ITEMS.consumable.find(x=>x.id==='con_shield'); const head = SHOP_ITEMS.consumable.find(x=>x.id==='con_head');
+            if(shield) document.getElementById('shield-status').innerHTML = `🛡️ Kalkan: <span style="color:#2c3e50;">${shield.count}</span>`;
+            if(head) document.getElementById('headstart-status').innerHTML = `🚀 Boost: <span style="color:#2c3e50;">${head.count}</span>`;
         }
 
         function applyBackground() {
             const bgItem = SHOP_ITEMS.cosmetic.find(x => x.id === state.equipped.bg);
-            const bgLayer = document.getElementById('bg-layer');
-            bgLayer.className = ''; 
-            if(bgItem) { bgLayer.classList.add(bgItem.css); } else { bgLayer.classList.add('bg-default'); }
+            const bgLayer = document.getElementById('bg-layer'); bgLayer.className = ''; 
+            if(bgItem) bgLayer.classList.add(bgItem.css); else bgLayer.classList.add('bg-default');
         }
 
-        // --- GAMEPLAY ---
         function startGame(){
             if(state.active)return;
             state.active=true; state.score=0; state.activePower = null; els.powerStatus.textContent = '';
             const diff=document.getElementById('difficulty').value;
-            
-            let boost = 0;
-            const boostItem = SHOP_ITEMS.consumable.find(x=>x.id==='con_head');
+            let boost = 0; const boostItem = SHOP_ITEMS.consumable.find(x=>x.id==='con_head');
             if(boostItem && boostItem.count > 0) { boostItem.count--; boost = 5; saveToLocal(); }
-
             state.time = (diff==='easy'?45:(diff==='hard'?20:30)) + boost;
             
             activeCircles.forEach(c=>c.remove()); activeCircles=[];
             els.score.textContent='0'; els.time.textContent=state.time;
-            document.getElementById('start-game-button').style.display='none';
-            document.getElementById('initial-back-button').style.display='none';
+            
+            document.getElementById('prep-panel').style.display='none';
+            document.getElementById('game-start-buttons').style.display='none';
             document.getElementById('end-game-buttons').style.display='none';
-            document.getElementById('difficulty').disabled=true;
-            document.getElementById('player-name').disabled=true;
-            updateUI();
-
-            scheduleNextSpawn();
-            timerInterval=setInterval(()=>{
-                state.time--; els.time.textContent=state.time;
-                if(state.time<=0)endGame();
-            },1000);
+            document.getElementById('btn-game-back').style.display='none';
+            
+            updateUI(); scheduleNextSpawn();
+            timerInterval=setInterval(()=>{ state.time--; els.time.textContent=state.time; if(state.time<=0)endGame(); },1000);
         }
 
         function scheduleNextSpawn(){
             if(!state.active) return;
             const diff = document.getElementById('difficulty').value;
             let delay = diff==='easy' ? 1200 : (diff==='hard' ? 600 : 900); 
+            if(duelState.active) delay = diff==='easy' ? 1000 : (diff==='hard' ? 500 : 700); // Duel is faster
             delay = Math.random() * 400 + delay;
             spawnTimeout = setTimeout(() => { spawnCircle(); scheduleNextSpawn(); }, delay);
         }
@@ -795,7 +1140,7 @@
             if(activeCircles.length>5)return;
             const diff = document.getElementById('difficulty').value;
             let baseSize = diff==='hard' ? 40 : 60;
-            if(state.activePower === 'giant') baseSize *= 1.5;
+            if(state.activePower === 'giant' && !duelState.active) baseSize *= 1.5;
 
             const maxTries=10; let x, y, valid=false;
             for(let i=0; i<maxTries; i++){
@@ -803,24 +1148,31 @@
                 y = Math.random() * (els.gameCont.offsetHeight - baseSize);
                 let collision = activeCircles.some(c => {
                     let cx = parseFloat(c.style.left), cy = parseFloat(c.style.top);
-                    let dist = Math.sqrt(Math.pow(x-cx,2)+Math.pow(y-cy,2));
-                    return dist < baseSize + 10;
+                    return Math.sqrt(Math.pow(x-cx,2)+Math.pow(y-cy,2)) < baseSize + 10;
                 });
                 if(!collision) { valid=true; break; }
             }
             if(!valid) return;
 
             const r=Math.random();
-            let type='good'; if(r<0.2)type='bad';else if(r<0.25)type='power-up';else if(r<0.3)type='boss';
-            
             const el=document.createElement('div');
-            let css=type==='good' ? (SHOP_ITEMS.cosmetic.find(x=>x.id===state.equipped.skin)?.css || 'skin-default') : type;
-            el.className=`circle ${css}`;
-            el.style.left=x+'px'; el.style.top=y+'px';
-            el.style.width=baseSize+'px'; el.style.height=baseSize+'px';
-            el.dataset.type=type; 
-            if(type==='boss') el.dataset.hp = SHOP_ITEMS.upgrade.find(u=>u.id==='upg_boss').owned ? 2 : 3; 
+            let type, css;
 
+            if(duelState.active) {
+                // Duel Modu: Sadece Renkler ve Siyah
+                if(r < 0.4) { type = 'duel-mine'; css = 'skin-' + duelState.myColor; }
+                else if(r < 0.8) { type = 'duel-friend'; css = 'skin-' + duelState.friendColor; }
+                else { type = 'bad'; css = 'bad'; }
+            } else {
+                // Normal Mod
+                if(r<0.2) type='bad'; else if(r<0.25) type='power-up'; else if(r<0.3) type='boss'; else type='good';
+                css = type==='good' ? (SHOP_ITEMS.cosmetic.find(x=>x.id===state.equipped.skin)?.css || 'skin-default') : type;
+                if(type==='boss') el.dataset.hp = SHOP_ITEMS.upgrade.find(u=>u.id==='upg_boss').owned ? 2 : 3; 
+            }
+            
+            el.className=`circle ${css}`; el.style.left=x+'px'; el.style.top=y+'px';
+            el.style.width=baseSize+'px'; el.style.height=baseSize+'px'; el.dataset.type=type; 
+            
             const hit=(e)=>{e.preventDefault();e.stopPropagation();hitCircle(el)};
             el.addEventListener('touchstart',hit); el.addEventListener('mousedown',hit);
 
@@ -829,37 +1181,48 @@
 
             setTimeout(()=>{
                 if(el.parentNode){
-                    if(type !== 'bad') { showText(el, 'KAÇIRDIN!', '#e74c3c'); updateQuest('fails', 1); }
+                    if(!duelState.active && type !== 'bad') { showText(el, 'KAÇIRDIN!', '#e74c3c'); updateQuest('fails', 1); }
                     removeCircle(el);
                 }
-            }, diff==='hard'?1000:1600);
+            }, duelState.active ? (diff==='hard'?800:1200) : (diff==='hard'?1000:1600));
         }
 
         function hitCircle(el){
             const type=el.dataset.type;
-            updateQuest('clicks',1); let pts=0;
+            
+            if(duelState.active) {
+                if(type === 'duel-mine') {
+                    AudioSys.play('pop'); showText(el, '+1', '#2ecc71');
+                    document.getElementById('duel-p1-score').textContent = (duelState.myScore + 1);
+                    syncDuelStatus(1, false);
+                } else if(type === 'duel-friend') {
+                    AudioSys.play('bad'); showText(el, 'KAYBETTİN!', 'red');
+                    syncDuelStatus(0, true); endDuelLocally(false); // Kaybettim
+                } else if(type === 'bad') {
+                    AudioSys.play('bad'); showText(el, '-5', 'red');
+                    document.getElementById('duel-p1-score').textContent = (duelState.myScore - 5);
+                    syncDuelStatus(-5, false);
+                }
+                removeCircle(el, true); return;
+            }
 
+            // Normal Mod Mantığı
+            updateQuest('clicks',1); let pts=0;
             if(type==='bad'){
                 const shield = SHOP_ITEMS.consumable.find(x=>x.id==='con_shield');
-                if(shield && shield.count > 0) {
-                    shield.count--; AudioSys.play('pop'); showText(el, 'KURTULDUN!', '#3498db'); saveToLocal(); updateUI();
-                } else {
-                    state.score-=5; AudioSys.play('bad'); showText(el,'-5','red'); updateQuest('fails',1);
-                }
+                if(shield && shield.count > 0) { shield.count--; AudioSys.play('pop'); showText(el, 'KURTULDUN!', '#3498db'); saveToLocal(); updateUI(); } 
+                else { state.score-=5; AudioSys.play('bad'); showText(el,'-5','red'); updateQuest('fails',1); }
             } else if(type==='boss'){
                 let hp=parseInt(el.dataset.hp)-1;el.dataset.hp=hp;
                 el.style.transform=`scale(${1+(0.2*(3-hp))})`; AudioSys.play('pop');
                 if(hp>0)return;
                 pts=10; updateQuest('boss',1); AudioSys.play('coin'); showText(el,'BOSS!','gold'); spawnParticle(el);
             } else if(type==='power-up'){
-                const powers = ['time', 'double', 'giant']; const chosen = powers[Math.floor(Math.random() * powers.length)];
-                AudioSys.play('coin');
+                const powers = ['time', 'double', 'giant']; const chosen = powers[Math.floor(Math.random() * powers.length)]; AudioSys.play('coin');
                 if(chosen === 'time') { state.time+=5; showText(el,'+5sn','purple'); }
                 else if(chosen === 'double') { state.activePower = 'double'; els.powerStatus.textContent='⚡ 2X PUAN'; showText(el, '2X PUAN', 'orange'); clearTimeout(powerTimeout); powerTimeout=setTimeout(()=>state.activePower=null, SHOP_ITEMS.upgrade.find(u=>u.id==='upg_time').owned?8000:5000); }
                 else if(chosen === 'giant') { state.activePower = 'giant'; els.powerStatus.textContent='🔵 DEV MOD'; showText(el, 'DEV MOD', 'cyan'); clearTimeout(powerTimeout); powerTimeout=setTimeout(()=>state.activePower=null, SHOP_ITEMS.upgrade.find(u=>u.id==='upg_time').owned?8000:5000); }
-            } else {
-                pts=1; AudioSys.play('pop'); showText(el,'+1','#2ecc71'); spawnParticle(el);
-            }
+            } else { pts=1; AudioSys.play('pop'); showText(el,'+1','#2ecc71'); spawnParticle(el); }
             
             if(state.activePower === 'double' && pts > 0) pts *= 2;
             state.score+=pts; 
@@ -869,21 +1232,44 @@
         }
 
         function spawnParticle(el) {
-            const pItem = SHOP_ITEMS.cosmetic.find(x=>x.id === state.equipped.part);
-            if(!pItem || pItem.val === 'def') return;
-            const p = document.createElement('div'); p.textContent = pItem.val;
-            p.className = 'particle-emoji'; p.style.left = el.style.left; p.style.top = el.style.top;
+            const pItem = SHOP_ITEMS.cosmetic.find(x=>x.id === state.equipped.part); if(!pItem || pItem.val === 'def') return;
+            const p = document.createElement('div'); p.textContent = pItem.val; p.className = 'particle-emoji'; p.style.left = el.style.left; p.style.top = el.style.top;
             els.gameCont.appendChild(p); setTimeout(()=>p.remove(), 1000);
         }
 
         function removeCircle(el,clicked=false){ el.classList.remove('active'); if(clicked)el.classList.add('explode'); setTimeout(()=>{if(el.parentNode)el.remove()},200); activeCircles=activeCircles.filter(c=>c!==el); }
 
+        function endDuelLocally(iWon = null) {
+            stopGame();
+            let msg = "";
+            if(iWon === true) msg = "TEBRİKLER! KAZANDIN 🏆";
+            else if(iWon === false) msg = "YANLIŞ RENGE TIKLADIN! KAYBETTİN 💀";
+            else {
+                if(duelState.myScore > duelState.friendScore) msg = "SÜRE BİTTİ! KAZANDIN 🏆";
+                else if(duelState.myScore < duelState.friendScore) msg = "SÜRE BİTTİ! KAYBETTİN 💀";
+                else msg = "SÜRE BİTTİ! BERABERE 🤝";
+            }
+            showToast(msg, 5000);
+            setTimeout(() => {
+                duelState.active = false;
+                document.getElementById('duel-top-info').style.display = 'none';
+                document.getElementById('normal-top-info').style.display = 'flex';
+                document.getElementById('normal-power-info').style.display = 'flex';
+                document.getElementById('prep-panel').style.display='flex';
+                document.getElementById('game-start-buttons').style.display='flex';
+                document.getElementById('btn-game-back').style.display='flex';
+                if(unsubscribeDuel) { unsubscribeDuel(); unsubscribeDuel = null; }
+                if(duelState.isHost && duelState.id) deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'duels', duelState.id));
+            }, 3000);
+        }
+
         function endGame(){
-            stopGame(); AudioSys.play('bad'); 
-            showToast(`Oyun Bitti! Skor: ${state.score}`);
+            if(duelState.active) { endDuelLocally(); return; }
+            stopGame(); AudioSys.play('bad'); showToast(`Oyun Bitti! Skor: ${state.score}`);
             saveScore(state.score); saveToLocal();
+            document.getElementById('prep-panel').style.display='flex';
             document.getElementById('end-game-buttons').style.display='flex';
-            document.getElementById('difficulty').disabled=false; document.getElementById('player-name').disabled=false;
+            document.getElementById('btn-game-back').style.display='flex';
         }
 
         function stopGame(){ state.active=false; clearTimeout(spawnTimeout); clearInterval(timerInterval); activeCircles.forEach(c=>c.remove()); activeCircles=[]; state.activePower = null; els.powerStatus.textContent = ''; }
@@ -896,152 +1282,84 @@
 
         // --- SHOP & UI RENDERERS ---
         function renderShop(){
-            const list = document.getElementById('shop-list'); list.innerHTML = '';
-            const items = SHOP_ITEMS[currentShopFilter];
+            const list = document.getElementById('shop-list'); list.innerHTML = ''; const items = SHOP_ITEMS[currentShopFilter];
             items.forEach(item => {
                 const div = document.createElement('div'); div.className = 'shop-item';
-                let btnTxt, btnBg, onClickAttr;
-                if(item.type === 'consumable') {
-                    btnTxt = `${item.price} 💰 (${item.count})`; btnBg = '#f1c40f';
-                } else if (item.type === 'upgrade') {
-                    btnTxt = item.owned ? 'SAHİPLİ' : `${item.price} 💰`; btnBg = item.owned ? '#7f8c8d' : '#e67e22';
-                } else {
-                    const isEq = state.equipped[item.type] === item.id;
-                    btnTxt = item.owned ? (isEq ? 'SEÇİLİ' : 'SEÇ') : `${item.price} 💰`;
-                    btnBg = item.owned ? (isEq ? '#7f8c8d' : '#2ecc71') : '#f1c40f';
-                }
-                
-                div.innerHTML = `<div class="shop-preview ${item.css || ''}">${item.emoji || ''}</div>
-                                 <h4>${item.name}</h4><div class="shop-desc">${item.desc||''}</div>
-                                 <button class="buy-btn" data-cat="${item.type}" data-id="${item.id}" style="background:${btnBg};padding:5px;font-size:0.8em;width:100%;border-radius:8px;border:none;color:white;">${btnTxt}</button>`;
-                if(item.owned || item.count > 0) div.classList.add('item-owned');
-                list.appendChild(div);
+                let btnTxt, btnBg;
+                if(item.type === 'consumable') { btnTxt = `${item.price} 💰 (${item.count})`; btnBg = '#f1c40f'; } 
+                else if (item.type === 'upgrade') { btnTxt = item.owned ? 'SAHİPLİ' : `${item.price} 💰`; btnBg = item.owned ? '#7f8c8d' : '#e67e22'; } 
+                else { const isEq = state.equipped[item.type] === item.id; btnTxt = item.owned ? (isEq ? 'SEÇİLİ' : 'SEÇ') : `${item.price} 💰`; btnBg = item.owned ? (isEq ? '#7f8c8d' : '#2ecc71') : '#f1c40f'; }
+                div.innerHTML = `<div class="shop-preview ${item.css || ''}">${item.emoji || ''}</div><h4>${item.name}</h4><div class="shop-desc">${item.desc||''}</div><button class="buy-btn" data-cat="${item.type}" data-id="${item.id}" style="background:${btnBg};padding:5px;font-size:0.8em;width:100%;border-radius:8px;border:none;color:white;">${btnTxt}</button>`;
+                if(item.owned || item.count > 0) div.classList.add('item-owned'); list.appendChild(div);
             });
-
             document.querySelectorAll('.buy-btn').forEach(btn => {
                 btn.onclick = () => {
-                    const cat = btn.getAttribute('data-cat'); const id = btn.getAttribute('data-id');
-                    let group = cat === 'skin' || cat === 'bg' || cat === 'part' ? 'cosmetic' : cat;
-                    let item = SHOP_ITEMS[group].find(x => x.id === id);
-                    
-                    if(item.type === 'consumable') {
-                        if(state.coins >= item.price) { state.coins -= item.price; item.count++; AudioSys.play('coin'); } else { AudioSys.play('bad'); showToast('Yetersiz Bakiye'); }
-                    } else if(item.owned) {
-                        if(group === 'cosmetic') { state.equipped[item.type] = id; if(item.type === 'bg') applyBackground(); }
-                    } else {
-                        if(state.coins >= item.price) { state.coins -= item.price; item.owned = true; if(group === 'cosmetic') { state.equipped[item.type] = id; if(item.type === 'bg') applyBackground(); } AudioSys.play('coin'); } else { AudioSys.play('bad'); showToast('Yetersiz Bakiye'); }
-                    }
+                    const cat = btn.getAttribute('data-cat'); const id = btn.getAttribute('data-id'); let group = cat === 'skin' || cat === 'bg' || cat === 'part' ? 'cosmetic' : cat; let item = SHOP_ITEMS[group].find(x => x.id === id);
+                    if(item.type === 'consumable') { if(state.coins >= item.price) { state.coins -= item.price; item.count++; AudioSys.play('coin'); } else { AudioSys.play('bad'); showToast('Yetersiz Bakiye'); } } 
+                    else if(item.owned) { if(group === 'cosmetic') { state.equipped[item.type] = id; if(item.type === 'bg') applyBackground(); } } 
+                    else { if(state.coins >= item.price) { state.coins -= item.price; item.owned = true; if(group === 'cosmetic') { state.equipped[item.type] = id; if(item.type === 'bg') applyBackground(); } AudioSys.play('coin'); } else { AudioSys.play('bad'); showToast('Yetersiz Bakiye'); } }
                     saveToLocal(); updateUI(); renderShop();
                 };
             });
         }
 
         function renderQuests(){
-            const list=document.getElementById('quest-list'); list.innerHTML='';
-            const arr = currentQuestView === 'daily' ? quests.daily : quests.weekly;
-            arr.forEach((q,i)=>{
-                const btn=q.done&&!q.collected?`<button class="claim-btn" data-index="${i}" style="background:#f1c40f;margin-top:5px;padding:5px;">Ödül (${q.reward})</button>`:'';
-                const st=q.collected?'✅':`${q.curr}/${q.target}`;
-                list.innerHTML+=`<div class="list-item ${q.done?'done':''}"><b>${q.desc}</b><br>${st}${btn}</div>`;
-            });
-            document.querySelectorAll('.claim-btn').forEach(b => {
-                b.onclick = () => {
-                    const idx = b.getAttribute('data-index');
-                    const arr = currentQuestView === 'daily' ? quests.daily : quests.weekly;
-                    arr[idx].collected = true; state.coins += arr[idx].reward; AudioSys.play('coin');
-                    saveToLocal(); updateUI(); renderQuests();
-                };
-            });
+            const list=document.getElementById('quest-list'); list.innerHTML=''; const arr = currentQuestView === 'daily' ? quests.daily : quests.weekly;
+            arr.forEach((q,i)=>{ const btn=q.done&&!q.collected?`<button class="claim-btn" data-index="${i}" style="background:#f1c40f;margin-top:5px;padding:5px;">Ödül (${q.reward})</button>`:''; const st=q.collected?'✅':`${q.curr}/${q.target}`; list.innerHTML+=`<div class="list-item ${q.done?'done':''}"><b>${q.desc}</b><br>${st}${btn}</div>`; });
+            document.querySelectorAll('.claim-btn').forEach(b => { b.onclick = () => { const idx = b.getAttribute('data-index'); const arr = currentQuestView === 'daily' ? quests.daily : quests.weekly; arr[idx].collected = true; state.coins += arr[idx].reward; AudioSys.play('coin'); saveToLocal(); updateUI(); renderQuests(); }; });
         }
-
         function updateQuest(t,v){ ['daily','weekly'].forEach(cat=>{ quests[cat].forEach(q=>{ if(q.type===t){ if(!q.done)q.curr+=v; if(q.curr>=q.target)q.done=true; }}); }); saveToLocal(); }
         
         function saveScore(s){
-            const n=document.getElementById('player-name').value||'Oyuncu'; const d=document.getElementById('difficulty').value;
-            let w=JSON.parse(localStorage.getItem('sw'))||[]; w.push({name:n,score:s,diff:d}); w.sort((a,b)=>b.score-a.score);
-            let a=JSON.parse(localStorage.getItem('sa'))||[]; a.push({name:n,score:s,diff:d}); a.sort((x,y)=>y.score-x.score);
+            const d = document.getElementById('difficulty').value; const dObj = new Date(); const dateStr = dObj.toLocaleDateString('tr-TR') + ' ' + dObj.toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+            let w=JSON.parse(localStorage.getItem('sw'))||[]; w.push({date:dateStr,score:s,diff:d}); w.sort((a,b)=>b.score-a.score);
+            let a=JSON.parse(localStorage.getItem('sa'))||[]; a.push({date:dateStr,score:s,diff:d}); a.sort((x,y)=>y.score-x.score);
             localStorage.setItem('sw',JSON.stringify(w.slice(0,10))); localStorage.setItem('sa',JSON.stringify(a.slice(0,10)));
         }
 
         function renderScores(t){
-            const list=document.getElementById('score-list'); list.innerHTML='';
-            const d=JSON.parse(localStorage.getItem(t==='weekly'?'sw':'sa'))||[];
+            const list=document.getElementById('score-list'); list.innerHTML=''; const d=JSON.parse(localStorage.getItem(t==='weekly'?'sw':'sa'))||[];
             if(!d.length)list.innerHTML='<p style="text-align:center">Yok</p>';
-            d.forEach((s,i)=>list.innerHTML+=`<div class="list-item"><b>${i+1}. ${s.name}</b> (${s.diff}) <span style="float:right;color:#e74c3c">${s.score}</span></div>`);
+            d.forEach((s,i)=>list.innerHTML+=`<div class="list-item"><b>${i+1}. ${s.date}</b> (${s.diff}) <span style="float:right;color:#e74c3c">${s.score} Puan</span></div>`);
         }
 
         // --- EVENT LISTENERS ---
         function setupEvents(){
-            // Navigation
             document.getElementById('play-button').onclick=()=>showScreen('game-area');
             document.getElementById('menu-shop-button').onclick=()=>{showScreen('shop-screen');renderShop()};
             document.getElementById('menu-quests-achievements-button').onclick=()=>{showScreen('qa-screen');renderQuests()};
             document.getElementById('menu-scores-button').onclick=()=>{showScreen('scores-screen');renderScores('all')};
-            document.getElementById('menu-cloud-button').onclick=()=>{
-                showScreen('cloud-screen');
-                showToast('ℹ️ Sadece NPM Oyunları içindir (Diğer NPM Uygulamaları dahil değildir).', 4500);
-            };
+            document.getElementById('menu-cloud-button').onclick=()=>{ showScreen('cloud-screen'); showToast('ℹ️ Sadece NPM Oyunları içindir (Diğer NPM Uygulamaları dahil değildir).', 4500); };
+            
             document.getElementById('menu-tutorial-button').onclick=()=>document.getElementById('tutorial-overlay').style.display='flex';
             document.getElementById('close-tutorial').onclick=()=>document.getElementById('tutorial-overlay').style.display='none';
-            
-            // KVKK Events
             document.getElementById('open-kvkk').onclick=()=>document.getElementById('kvkk-modal').style.display='flex';
             document.getElementById('close-kvkk').onclick=()=>document.getElementById('kvkk-modal').style.display='none';
+            
+            document.getElementById('btn-open-friends').onclick=()=>document.getElementById('friends-modal').style.display='flex';
+            document.getElementById('close-friends-modal').onclick=()=>document.getElementById('friends-modal').style.display='none';
+            document.getElementById('close-friend-profile').onclick=()=>document.getElementById('friend-profile-modal').style.display='none';
 
-            // Back Buttons
             document.getElementById('shop-back-button').onclick=()=>showScreen('main-menu');
             document.getElementById('quest-back-button').onclick=()=>showScreen('main-menu');
             document.getElementById('score-back-button').onclick=()=>showScreen('main-menu');
-            document.getElementById('initial-back-button').onclick=()=>showScreen('main-menu');
-            document.getElementById('back-to-menu-button').onclick=()=>{stopGame();showScreen('main-menu')};
             document.getElementById('cloud-back-button').onclick=()=>showScreen('main-menu');
             
-            // Actions
-            document.getElementById('start-game-button').onclick=startGame;
-            document.getElementById('reset-button').onclick=startGame;
+            document.getElementById('btn-game-back').onclick=()=>{ stopGame(); document.getElementById('prep-panel').style.display='flex'; document.getElementById('game-start-buttons').style.display='flex'; document.getElementById('end-game-buttons').style.display='none'; showScreen('main-menu'); };
+            
+            document.getElementById('start-game-button').onclick=startGame; document.getElementById('reset-button').onclick=startGame;
             document.getElementById('sound-toggle').onclick=(e)=>{AudioSys.enabled=!AudioSys.enabled;e.target.textContent=AudioSys.enabled?'🔊':'🔇';if(AudioSys.enabled)AudioSys.init()};
             
-            // Admin & Reset (No alerts)
-            document.getElementById('reset-data-button').onclick=()=> {
-                askConfirm("Tüm YEREL ilerlemen silinecek! Emin misin?", (yes) => {
-                    if(yes) { localStorage.clear(); location.reload(); }
-                });
-            };
-            document.getElementById('admin-login-button').onclick=()=> {
-                askPrompt("Admin Komutu Girin:", (input) => {
-                    if(!input) return;
-                    if(input.startsWith('!')) {
-                        const amount = parseInt(input.substring(1));
-                        if(!isNaN(amount)) { state.coins += amount; saveToLocal(); updateUI(); showToast(`${amount} Para Eklendi!`); }
-                    } else if(input === 'NPM5') {
-                        state.coins = 9999999; saveToLocal(); updateUI(); showToast("Sınırsız Para Aktif!");
-                    } else { showToast("Hatalı Komut!"); }
-                });
-            };
+            document.getElementById('reset-data-button').onclick=()=> { askConfirm("Tüm YEREL ilerlemen silinecek! Emin misin?", (yes) => { if(yes) { localStorage.clear(); location.reload(); } }); };
+            document.getElementById('admin-login-button').onclick=()=> { askPrompt("Admin Komutu Girin:", (input) => { if(!input) return; if(input.startsWith('!')) { const amount = parseInt(input.substring(1)); if(!isNaN(amount)) { state.coins += amount; saveToLocal(); updateUI(); showToast(`${amount} Para Eklendi!`); } } else if(input === 'NPM5') { state.coins = 9999999; saveToLocal(); updateUI(); showToast("Sınırsız Para Aktif!"); } else { showToast("Hatalı Komut!"); } }); };
 
-            // Cloud specific
-            document.getElementById('cloud-save-btn').onclick = () => saveToCloud(false);
-            document.getElementById('cloud-load-btn').onclick = () => loadFromCloud(true);
-            document.getElementById('auto-save-toggle').onchange = (e) => {
-                state.autoSave = e.target.checked;
-                saveToLocal();
-                showToast(state.autoSave ? "Otomatik Kayıt: AÇIK" : "Otomatik Kayıt: KAPALI");
-            };
+            document.getElementById('cloud-save-btn').onclick = () => saveToCloud(false); document.getElementById('cloud-load-btn').onclick = () => loadFromCloud(true);
+            document.getElementById('auto-save-toggle').onchange = (e) => { state.autoSave = e.target.checked; saveToLocal(); showToast(state.autoSave ? "Otomatik Kayıt: AÇIK" : "Otomatik Kayıt: KAPALI"); };
 
-            // Tabs
-            document.querySelectorAll('.shop-tab').forEach(b => b.onclick = (e) => {
-                currentShopFilter = e.target.getAttribute('data-tab');
-                document.querySelectorAll('.shop-tab').forEach(x => x.classList.remove('active'));
-                e.target.classList.add('active'); renderShop();
-            });
-            document.querySelectorAll('.q-tab').forEach(b => b.onclick = (e) => {
-                currentQuestView = e.target.getAttribute('data-qtab');
-                document.querySelectorAll('.q-tab').forEach(x => x.classList.remove('active'));
-                e.target.classList.add('active'); renderQuests();
-            });
-            document.querySelectorAll('.score-tab').forEach(b => b.onclick = (e) => {
-                renderScores(e.target.getAttribute('data-stab'));
-            });
+            document.querySelectorAll('.c-tab').forEach(b => b.onclick = (e) => { document.querySelectorAll('.c-tab').forEach(x => x.classList.remove('active')); document.querySelectorAll('.ctab-content').forEach(x => x.classList.remove('active')); e.target.classList.add('active'); document.getElementById(e.target.getAttribute('data-ctab')).classList.add('active'); });
+            document.querySelectorAll('.shop-tab').forEach(b => b.onclick = (e) => { currentShopFilter = e.target.getAttribute('data-tab'); document.querySelectorAll('.shop-tab').forEach(x => x.classList.remove('active')); e.target.classList.add('active'); renderShop(); });
+            document.querySelectorAll('.q-tab').forEach(b => b.onclick = (e) => { currentQuestView = e.target.getAttribute('data-qtab'); document.querySelectorAll('.q-tab').forEach(x => x.classList.remove('active')); e.target.classList.add('active'); renderQuests(); });
+            document.querySelectorAll('.score-tab').forEach(b => b.onclick = (e) => { renderScores(e.target.getAttribute('data-stab')); });
         }
 
         init();
